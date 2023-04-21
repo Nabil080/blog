@@ -4,8 +4,6 @@ require_once('controller/indexController.php');
 require_once('controller/userController.php');
 require_once('controller/adminController.php');
 
-// $_SESSION['role'] = 2 ;
-// logout();
 var_dump($_SESSION);
 
 if(!isset($_SESSION['user'])){

@@ -42,6 +42,8 @@
                                 if($_SESSION['error']=='invalid_mail'){ echo '<div style="color:red">Email invalide !</div>'; }
                                 if($_SESSION['error']=='missing_mail'){ echo '<div style="color:red">Cet email n\'est lié à aucun compte !</div>'; }
                                 if($_SESSION['error']=='invalid_password'){ echo '<div style="color:red">Mot de passe incorrect !</div>'; }
+                                if($_SESSION['error']=='activate_account'){ echo '<div style="color:red">Votre compte n\'est pas activé !</div>
+                                    <a href="?action=validate_mail&token='.$_GET['token'].'">Renvoyer un mail de validation </a>'; }
                             } ?>
                             <div class="form-group form-button">
                                 <input type="submit" name="signin" id="signin" class="form-submit" value="Log in"/>

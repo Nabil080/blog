@@ -41,13 +41,20 @@ function loginTreatment(){
 
     if($user != []){
         if(password_verify($_POST['password'],$user->password)){
-            $_SESSION['user'] = [
+            if($user->active == true){
+                $_SESSION['user'] = [
                 'id' => $user->id,
                 'name' => $user->name,
                 'mail' => $user->mail,
                 'role' => $user->role
             ];
             header('Location: index.php');
+            }else{
+                $_SESSION['error'] = 'activate_account';
+
+                header('Location: index.php?action=login&token='.$user->token);
+            }
+        
         }else{
 
             $_SESSION['error'] = 'invalid_password';
