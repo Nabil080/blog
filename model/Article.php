@@ -97,7 +97,23 @@ class ArticleRepository extends ConnectBdd{
             $article->section[] = $section;
         }
 
-        
+        $req = $this->bdd->prepare("SELECT * FROM comment WHERE article_id = ?");
+        $req->execute([$id]);
+        $comment_data = $req->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($comment_data as $key){
+            $comment = new Comment;
+            $comment->id = $key['comment_id'];
+            $comment->date = $key['comment_date'];
+            $comment->message = $key['comment_message'];
+            $comment->article = $key['article_id'];
+            $user = new User ();
+            $userRepo = new UserRepository;
+            $user = $userRepo->getUserByID($key['user_id']);
+            $comment->user = $user;
+
+            $article->comment[] = $comment;
+        }
+
 
 
         // TODO : new Tag, new Comment
