@@ -22,7 +22,7 @@
                 <div class="signup-content">
                     <div class="signup-form">
                         <h2 class="form-title">Sign up</h2>
-                        <form method="POST" class="register-form" id="register-form">
+                        <form class="register-form" id="register-form">
                             <div class="form-group">
                                 <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
                                 <input type="text" name="name" id="name" placeholder="Your Name"/>
@@ -40,20 +40,12 @@
                                 <input type="password" name="confirm_password" id="confirm_password" placeholder="Repeat your password"/>
                             </div>
                             <div class="form-group">
-                                <input type="checkbox" name="agree" id="agree" class="agree" />
+                                <input type="checkbox" name="agree" id="agree" class="agree"/>
                                 <label for="agree" class="label-agree"><span><span></span></span>I agree all statements in  <a href="#" class="term-service">Terms of service</a></label>
-                            </div>
-                            <?php
-                                if(isset($_SESSION['error'])){?>
-                                <div id="error_message" style="color:red"><?php
-                                    if($_SESSION['error']=='invalid_name'){ echo 'Nom invalide !'; }
-                                    if($_SESSION['error']=='short_name'){ echo 'Nom trop court !'; }
-                                    if($_SESSION['error']=='invalid_password'){ echo 'Mot de passe invalide ! (Une majuscule, un chiffre et un charactère spécial minimum)'; }
-                                    if($_SESSION['error']=='confirm_password'){ echo 'Les mots de passe ne correspondent pas !'; }
-                                    if($_SESSION['error']=='invalid_mail'){ echo 'Email invalide !'; }
-                                    if($_SESSION['error']=='existing_mail'){ echo 'Email déjà existant !'; }
-                                    if($_SESSION['error']=='missing_elements'){ echo 'Elements manquants !'; }
-                                ?> </div> <?php } ?>
+                            </div>                                
+                            <div id="error_message" style="color:red"></div>
+                            <a id="activate_account" style="color:black;display:none">Renvoyer le mail d'activation</a>
+                            <a id="connect"style="color:black;display:none">Se connecter</a>
                             <div class="form-group form-button">
                                 <input type="submit" name="signup" id="signup" class="form-submit" value="signup"/>
                             </div>
@@ -72,40 +64,40 @@
 <srcipt src="assets/vendor/jquery/jquery.min.js"></srcipt>
 <srcipt src="assets/js/main.js"></srcipt>
 <script>
-const form = document.querySelector('#register-form');
-form.addEventListener('submit', (event) => {
-    event.preventDefault(); // prevent the default form submission
-    const formData = new FormData(form);
-    fetch('?action=signup_php', {
+
+const signUpForm = document.querySelector("#register-form")
+signUpForm.addEventListener('submit',function(event){
+    event.preventDefault();
+
+    const formData = new FormData(signUpForm);
+    fetch('index.php?action=signup_php',{
         method: 'POST',
         body: formData
     })
     .then(response => response.json())
     .then(data => {
-        console.log(data); // Add this console log to see the response data in the browser console
-        document.getElementById("signup").remove();
-        if (data.success) {
-            // handle successful submission
-            alert('Un mail pour valider votre compte vous a été envoyé !');
-            // redirect to validation page
-            window.location.href = `?action=validate_mail&token=${data.token}`;
+
+        const errorMessage = document.querySelector('#error_message');
+            errorMessage.innerText = data.message;
+            errorMessage.style.display = 'block';
+
+        if (data.status === 'success') {
+                const activateAccount = document.querySelector('#activate_account');
+                activateAccount.style.display = 'block';
+                activateAccount.href = data.activate;
         } else {
-            // handle errors
-            const errorMessages = document.querySelector('#error_message');
-            errorMessages.innerHTML = '';
-            for (const [key, value] of Object.entries(data.errors)) {
-                const errorMessage = document.createElement('div');
-                errorMessage.style.color = 'red';
-                errorMessage.textContent = value;
-                errorMessages.appendChild(errorMessage);
+            if(data.connect){
+                const connect = document.querySelector('#connect');
+                connect.style.display = 'block';
+                connect.href = data.connect;
             }
+
         }
     })
-    .catch(error => {
-        // handle any other errors
-        console.error(error);
-    });
+    .catch(error => console.error(error));
 });
+
+
 </script>
 </body><!-- This templates was made by Colorlib (https://colorlib.com) -->
 </html>

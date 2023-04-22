@@ -13,28 +13,23 @@ function signUp(){
 function signUpTreatment(){
     $user = new User;
     $userRepo = new UserRepository;
-    $userPost = $_POST;
-    var_dump($_POST);
-
 
     if($user->createToInsert($_POST)){
         $check_existing = $userRepo->getUserByMail($_POST['mail']);
-        var_dump($check_existing);
         if($check_existing == []){
             $userRepo->insertUser($user);
-            echo 'Un mail pour valider votre compte vous a été envoyé !';
-            echo '<a href="?action=validate_mail&token='.$user->token.'">Lien temporaire pour valider le compte </a> ';
-
-            // header('Location: index.php');
+            // traitement message de succès dans insertUser
         }else{
-            // echo 'Email déjà existant';
-            $_SESSION['error'] = 'existing_mail';
-            header('Location: index.php?action=signup');
+            $response = array(
+                "status" => "failure",
+                "message" => "Cet email est déjà utilisé !",
+                "connect" => "index.php?action=login&mail=".$_POST['mail']
+            );
+
+            echo json_encode($response);
         }
     }else{
-        // echo 'Elements manquants';
-        // session error traité dans "createToInsert()"
-        header('Location: index.php?action=signup');
+        // traitement des erreurs présent dans createToInsert (dans les fonctions)
     }
 }
 
@@ -77,7 +72,7 @@ function loginTreatment(){
         }else{
             $response = array(
                 "status" => "failure",
-                "message" => "'Mot de passe invalide ! (Une majuscule, un chiffre et un charactère spécial minimum)'"
+                "message" => "Mot de passe invalide ! (Une majuscule, un chiffre et un charactère spécial minimum)"
             );
             
             echo json_encode($response);

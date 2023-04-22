@@ -31,7 +31,7 @@
                         <form class="register-form" id="login-form">
                             <div class="form-group">
                                 <label for="mail"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                                <input type="email" name="mail" id="mail" placeholder="Your mail"/>
+                                <input type="email" name="mail" id="mail" placeholder="Your mail" <?php if(isset($_GET['mail'])){echo 'value="'.$_GET['mail'].'"';} ?>/>
                             </div>
                             <div class="form-group relative">
                                 <label for="=password"><i class="zmdi zmdi-lock"></i></label>
@@ -65,7 +65,6 @@ loginForm.addEventListener('submit', function(event) {
 
     // handle form submission with fetch
     const formData = new FormData(loginForm);
-    console.log(formData);
     fetch('index.php?action=login_php', {
         method: 'POST',
         body: formData
