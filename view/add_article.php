@@ -34,23 +34,45 @@ if(isset($_POST['article'])){
     $article = new Article;
     if($article->createToInsert($_POST)){
         $articleRepo = new ArticleRepository;
-        // $articleRepo->insertArticle($article);
+        $articleRepo->insertArticle($article);
         var_dump($article);
     }
 }
 
-// var_dump($_POST);
 $articleRepository = new ArticleRepository;
 $articles = $articleRepository->getArticles();
-var_dump($articles)
 ?>
 
 <form action="" method="post">
-    <select name="article">
-        <option value=""></option>
-    </select>
 
+    <select name="article_id">
+        <?php foreach($articles as $article){ ?>
+            <option value="<?=$article->id?>"><?=$article->name?></option>
+        <?php } ?>
+    </select>
+    <label>Titre de la section</label>
+    <input type="text" name="section_title" >
+    <label>Texte de la section</label>
+    <input type="text" name="section_text">
+    <label>Image de la section</label>
+    <input type="file" name="section_image">
+    <button type ="submit" name="section">submit</button>
 </form>
+
+<?php
+
+if(isset($_POST['section'])){
+    $section = new Section;
+    if($section->createToInsert($_POST)){
+        $sectionRepo = new SectionRepository;
+        $sectionRepo->insertSection($section);
+        var_dump($section);
+    }
+}
+
+
+?>
+
 
 <script>
 

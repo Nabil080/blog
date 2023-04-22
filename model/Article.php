@@ -17,10 +17,7 @@ class Article{
 
     public function createToInsert(array $articleForm):bool{
 
-
-        $this->id = "";
         $this->name = $articleForm['name'];
-        $this->date = "";
         $this->intro = $articleForm['intro'];
         $this->quote = $articleForm['quote'];
         $this->image = $articleForm['image'];
@@ -43,6 +40,12 @@ class ArticleRepository extends ConnectBdd{
         (article_name,article_intro,article_quote,article_image,category_id,user_id)
         VALUES (?,?,?,?,?,?)");
         $req->execute([$article->name,$article->intro,$article->quote,$article->image,$article->category,$article->user]);
+
+        // foreach($article->tag as $key){
+        //     $tag = new Tag;
+        //     insertArticleTag($key,$this->bdd->lastInsertId())
+        // }
+        
     }
 
     public function getArticle($id){
