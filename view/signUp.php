@@ -22,7 +22,7 @@
                 <div class="signup-content">
                     <div class="signup-form">
                         <h2 class="form-title">Sign up</h2>
-                        <form action="?action=signup_php" method="POST" class="register-form" id="register-form">
+                        <form method="POST" class="register-form" id="register-form">
                             <div class="form-group">
                                 <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
                                 <input type="text" name="name" id="name" placeholder="Your Name"/>
@@ -44,15 +44,16 @@
                                 <label for="agree" class="label-agree"><span><span></span></span>I agree all statements in  <a href="#" class="term-service">Terms of service</a></label>
                             </div>
                             <?php
-                                if(isset($_SESSION['error'])){
-                                    if($_SESSION['error']=='invalid_name'){ echo '<div style="color:red">Nom invalide !</div>'; }
-                                    if($_SESSION['error']=='short_name'){ echo '<div style="color:red">Nom trop court !</div>'; }
-                                    if($_SESSION['error']=='invalid_password'){ echo '<div style="color:red">Mot de passe invalide ! (Une majuscule, un chiffre et un charactère spécial minimum)</div>'; }
-                                    if($_SESSION['error']=='confirm_password'){ echo '<div style="color:red">Les mots de passe ne correspondent pas !</div>'; }
-                                    if($_SESSION['error']=='invalid_mail'){ echo '<div style="color:red">Email invalide !</div>'; }
-                                    if($_SESSION['error']=='existing_mail'){ echo '<div style="color:red">Email déjà existant !</div>'; }
-                                    if($_SESSION['error']=='missing_elements'){ echo '<div style="color:red">Elements manquants !</div>'; }
-                                } ?>
+                                if(isset($_SESSION['error'])){?>
+                                <div id="error_message" style="color:red"><?php
+                                    if($_SESSION['error']=='invalid_name'){ echo 'Nom invalide !'; }
+                                    if($_SESSION['error']=='short_name'){ echo 'Nom trop court !'; }
+                                    if($_SESSION['error']=='invalid_password'){ echo 'Mot de passe invalide ! (Une majuscule, un chiffre et un charactère spécial minimum)'; }
+                                    if($_SESSION['error']=='confirm_password'){ echo 'Les mots de passe ne correspondent pas !'; }
+                                    if($_SESSION['error']=='invalid_mail'){ echo 'Email invalide !'; }
+                                    if($_SESSION['error']=='existing_mail'){ echo 'Email déjà existant !'; }
+                                    if($_SESSION['error']=='missing_elements'){ echo 'Elements manquants !'; }
+                                ?> </div> <?php } ?>
                             <div class="form-group form-button">
                                 <input type="submit" name="signup" id="signup" class="form-submit" value="signup"/>
                             </div>
@@ -67,9 +68,45 @@
         </section>
     </div>
 
-    <!-- JS -->
-    <srcipt src="assets/vendor/jquery/jquery.min.js"></srcipt>
-    <srcipt src="assets/js/main.js"></srcipt>
+<!-- JS -->
+<srcipt src="assets/vendor/jquery/jquery.min.js"></srcipt>
+<srcipt src="assets/js/main.js"></srcipt>
+<script>
+const form = document.querySelector('#register-form');
+form.addEventListener('submit', (event) => {
+    event.preventDefault(); // prevent the default form submission
+    const formData = new FormData(form);
+    fetch('?action=signup_php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data); // Add this console log to see the response data in the browser console
+        document.getElementById("signup").remove();
+        if (data.success) {
+            // handle successful submission
+            alert('Un mail pour valider votre compte vous a été envoyé !');
+            // redirect to validation page
+            window.location.href = `?action=validate_mail&token=${data.token}`;
+        } else {
+            // handle errors
+            const errorMessages = document.querySelector('#error_message');
+            errorMessages.innerHTML = '';
+            for (const [key, value] of Object.entries(data.errors)) {
+                const errorMessage = document.createElement('div');
+                errorMessage.style.color = 'red';
+                errorMessage.textContent = value;
+                errorMessages.appendChild(errorMessage);
+            }
+        }
+    })
+    .catch(error => {
+        // handle any other errors
+        console.error(error);
+    });
+});
+</script>
 </body><!-- This templates was made by Colorlib (https://colorlib.com) -->
 </html>
 

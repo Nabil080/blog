@@ -15,6 +15,7 @@ class User{
 
     public function createToInsert(array $userPost):bool{
 
+        var_dump($userPost);
         if(securizeString($userPost['name']) == false){
 
             return false;

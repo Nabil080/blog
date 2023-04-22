@@ -13,6 +13,9 @@ function signUp(){
 function signUpTreatment(){
     $user = new User;
     $userRepo = new UserRepository;
+    $userPost = $_POST;
+    var_dump($_POST);
+
 
     if($user->createToInsert($_POST)){
         $check_existing = $userRepo->getUserByMail($_POST['mail']);
