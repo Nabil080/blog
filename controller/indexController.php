@@ -98,10 +98,14 @@ function resetPassword(){
         // sendResetPassword($_POST['mail']);
         $userRepo = new UserRepository;
         $user = $userRepo->getUserByMail($_POST['mail']);
-        echo'<a href="?action=reset_password&token='.$user->token.'"> LIEN TEMPORAIRE POUR RESET LE MDP </a>';
+        if(isset($user->token)){
+            echo'<a href="?action=reset_password&token='.$user->token.'"> LIEN TEMPORAIRE POUR RESET LE MDP </a>';
 
-        echo '<br>Un mail pour réinitialiser votre mot de passe vous a été envoyé !';
-        echo '<br><a href="index.php">Se connecter</a>';
+            echo '<br>Un mail pour réinitialiser votre mot de passe vous a été envoyé !';
+            echo '<br><a href="index.php">Se connecter</a>';
+        }else{
+            echo "Ce compte n'existe pas !";
+        }
 
     }elseif(isset($_GET['token']) && !isset($_POST['mail'])){
         $userRepo = new UserRepository;
