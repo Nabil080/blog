@@ -5,6 +5,7 @@
 <?php 
 $articleRepo = new ArticleRepository;
 $article = $articleRepo->getArticle(2);
+var_dump($article);
 ?>
 
     <main id="main">
@@ -49,7 +50,7 @@ $article = $articleRepo->getArticle(2);
 
               <div class="meta-top">
                 <ul>
-                  <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="blog-details.html"><?=$article->user?></a></li>
+                  <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="blog-details.html"><?=$article->user->name?></a></li>
                   <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a href="blog-details.html"><time datetime="2020-01-01"><?php $date = new DateTime($article->date); echo $date->format('d M, Y')?></time></a></li>
                   <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="blog-details.html">12 Comments</a></li>
                 </ul>
@@ -71,7 +72,7 @@ $article = $articleRepo->getArticle(2);
                 </p>
 
                 <?php if($article->section){
-                  foreach($article->section as $section){?>
+                  foreach($article->section as $section){var_dump($section);?>
                     <h3><?=$section->title?></h3>
                   <p>
                     <?=$section->body?>
@@ -105,7 +106,7 @@ $article = $articleRepo->getArticle(2);
             <div class="post-author d-flex align-items-center">
               <img src="assets/img/blog/blog-author.jpg" class="rounded-circle flex-shrink-0" alt="">
               <div>
-                <h4><?=$article->user?></h4>
+                <h4><?=$article->user->name?></h4>
                 <div class="social-links">
                   <a href="https://twitters.com/#"><i class="bi bi-twitter"></i></a>
                   <a href="https://facebook.com/#"><i class="bi bi-facebook"></i></a>
