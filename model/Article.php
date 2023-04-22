@@ -48,9 +48,9 @@ class ArticleRepository extends ConnectBdd{
         
     }
 
-    public function getArticle($id){
+    public function getArticle($articleId){
         $req = $this->bdd->prepare("SELECT * FROM article WHERE article_id = ?");
-        $req->execute([$id]);
+        $req->execute([$articleId]);
         $article_data = $req->fetch();
         $article = new Article;
         $article->id = $article_data['article_id'];
@@ -84,7 +84,7 @@ class ArticleRepository extends ConnectBdd{
         $article->category = $category;
 
         $req = $this->bdd->prepare("SELECT * FROM section WHERE article_id = ?");
-        $req->execute([$id]);
+        $req->execute([$articleId]);
         $section_data = $req->fetchAll(PDO::FETCH_ASSOC);
         foreach ($section_data as $key){
             $section = new Section;
@@ -98,7 +98,7 @@ class ArticleRepository extends ConnectBdd{
         }
 
         $req = $this->bdd->prepare("SELECT * FROM comment WHERE article_id = ?");
-        $req->execute([$id]);
+        $req->execute([$articleId]);
         $comment_data = $req->fetchAll(PDO::FETCH_ASSOC);
         foreach ($comment_data as $key){
             $comment = new Comment;
@@ -114,9 +114,22 @@ class ArticleRepository extends ConnectBdd{
             $article->comment[] = $comment;
         }
 
+        $req = $this->bdd->prepare("SELECT tag_id FROM article_tag WHERE article_id = ?");
+        $req->execute([$articleId]);
+        $article_tags = $req->fetchAll(PDO::FETCH_ASSOC);
+        foreach($article_tags as $article_tag){
+            $req = $this->bdd->prepare("SELECT * FROM tag WHERE tag_id = ?");
+            $req->execute([$article_tag['tag_id']]);
+            $tag_data = $req->fetch();
+            $tag = new Tag;
 
+            $tag->id = $tag_data['tag_id'];
+            $tag->name = $tag_data['tag_name'];
+            
+            $article->tag[] = $tag;
+        }
 
-        // TODO : new Tag, new Comment
+        // TODO : new Tag
 
         return $article;
     }

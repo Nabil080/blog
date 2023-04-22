@@ -6,6 +6,15 @@
 $articleRepo = new ArticleRepository;
 $article = $articleRepo->getArticle(2);
 var_dump($article);
+
+// $count_intro = str_word_count($article->intro);
+// var_dump($count_intro);
+// $split_intro = str_split($article->intro,$count_intro / 2);
+// var_dump($split_intro);
+// TODO: REFLEXIVITE SPLIT
+$words = explode(" ",$article->intro);
+$count_words = count($words);
+$half_intro = $count_words / 2;
 ?>
 
     <main id="main">
@@ -52,13 +61,13 @@ var_dump($article);
                 <ul>
                   <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="blog-details.html"><?=$article->user->name?></a></li>
                   <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a href="blog-details.html"><time datetime="2020-01-01"><?php $date = new DateTime($article->date); echo $date->format('d M, Y')?></time></a></li>
-                  <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="blog-details.html">12 Comments</a></li>
+                  <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="blog-details.html"><?=count($article->comment)?> comments</a></li>
                 </ul>
               </div><!-- End meta top -->
 
               <div class="content">
                 <p>
-                <?=$article->intro?>
+                <?php for($i=0;$i<$half_intro;$i++){echo $words[$i]." ";}?>
                 </p>
 
                 <blockquote>
@@ -68,11 +77,11 @@ var_dump($article);
                 </blockquote>
 
                 <p>
-                <?=$article->intro?>
+                <?php for($i=$half_intro;$i<$count_words;$i++){echo $words[$i]." ";} ?>
                 </p>
 
                 <?php if($article->section){
-                  foreach($article->section as $section){var_dump($section);?>
+                  foreach($article->section as $section){?>
                     <h3><?=$section->title?></h3>
                   <p>
                     <?=$section->body?>
@@ -124,7 +133,7 @@ var_dump($article);
 
             <div class="comments">
 
-              <h4 class="comments-count">8 Comments</h4>
+              <h4 class="comments-count"><?=count($article->comment)?> comments</h4>
               <?php foreach($article->comment as $comment){ ?>
                 <div id="comment-1" class="comment">
                   <div class="d-flex">
