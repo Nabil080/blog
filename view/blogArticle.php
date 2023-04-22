@@ -150,6 +150,24 @@ $half_intro = $count_words / 2;
                       </p>
                     </div>
                   </div>
+                      
+                  <?php foreach($comment->reply as $reply){?>
+                  <div id="comment-reply-1" class="comment comment-reply">
+                  <div class="d-flex">
+                  <?php if(isset($reply->user->image)){ ?>
+                    <div class="comment-img"><img src="assets/img/blog/<?=$reply->user->image?>" alt=""></div>
+                    <?php }else{?>
+                      <div class="comment-img"><img src="https://www.civictheatre.ie/wp-content/uploads/2016/05/blank-profile-picture-973460_960_720.png" alt=""></div>
+                    <?php } ?>
+                    <div>
+                      <h5><a href=""><?=$reply->user->name?></a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
+                      <time datetime="2020-01-01"><?php $date = new DateTime($reply->date); echo $date->format('d M, Y');?></time>
+                      <p>
+                      <?=$reply->message?>
+                        </p>
+                    </div>
+                  </div>
+                    <?php } ?>
                 </div><!-- End comment #1 -->
               <?php } ?>
 

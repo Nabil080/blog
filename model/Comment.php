@@ -8,6 +8,7 @@ class Comment{
     public $message;
     public $article;
     public $user;
+    public $reply;
     
     public function createToInsert(array $categoryForm):bool{
 
@@ -24,6 +25,8 @@ class CommentRepository extends ConnectBdd{
     public function __construct(){
         parent::__construct();
     }
+
+
 }
 
 

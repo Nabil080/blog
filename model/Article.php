@@ -106,14 +106,22 @@ class ArticleRepository extends ConnectBdd{
             $comment->date = $key['comment_date'];
             $comment->message = $key['comment_message'];
             $comment->article = $key['article_id'];
+
             $user = new User ();
             $userRepo = new UserRepository;
             $user = $userRepo->getUserByID($key['user_id']);
             $comment->user = $user;
 
+            $reply = new Reply ();
+            $replyRepo = new ReplyRepository;
+            $reply = $replyRepo->getRepliesByCommentId($comment->id);
+            $comment->reply = $reply;
+
+
             $article->comment[] = $comment;
         }
 
+        
         $req = $this->bdd->prepare("SELECT tag_id FROM article_tag WHERE article_id = ?");
         $req->execute([$articleId]);
         $article_tags = $req->fetchAll(PDO::FETCH_ASSOC);
@@ -129,7 +137,6 @@ class ArticleRepository extends ConnectBdd{
             $article->tag[] = $tag;
         }
 
-        // TODO : new Tag
 
         return $article;
     }
