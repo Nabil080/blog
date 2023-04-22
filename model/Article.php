@@ -51,33 +51,42 @@ class ArticleRepository extends ConnectBdd{
     public function getArticle($id){
         $req = $this->bdd->prepare("SELECT * FROM article WHERE article_id = ?");
         $req->execute([$id]);
-        $data = $req->fetch();
+        $article_data = $req->fetch();
         $article = new Article;
-        $article->id = $data['article_id'];
-        $article->name = $data['article_name'];
-        $article->date = $data['article_date'];
-        $article->intro = $data['article_intro'];
-        $article->quote = $data['article_quote'];
-        $article->image = $data['article_image'];
-        $article->category = $data['category_id'];
-        $article->tag[] = 1;
+        $article->id = $article_data['article_id'];
+        $article->name = $article_data['article_name'];
+        $article->date = $article_data['article_date'];
+        $article->intro = $article_data['article_intro'];
+        $article->quote = $article_data['article_quote'];
+        $article->image = $article_data['article_image'];
+        // $article->category = $data['category_id'];
+        // $article->tag[] = 1;
 
         $req = $this->bdd->prepare("SELECT * FROM user WHERE user_id = ?");
-        $req->execute([$data['user_id']]);
-        $data = $req->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($data as $key){
-            $user = new User;
-            $user->id = $key['user_id'];
-            $user->name = $key['user_name'];
-            $user->image = $key['user_image'];
+        $req->execute([$article_data['user_id']]);
+        $user_data = $req->fetch();
+        $user = new User;
 
-            $article->user = $user;
-        }
+        $user->id = $user_data['user_id'];
+        $user->name = $user_data['user_name'];
+        $user->image = $user_data['user_image'];
+
+        $article->user = $user;
+
+        $req = $this->bdd->prepare("SELECT * FROM category WHERE category_id = ?");
+        $req->execute([$article_data['category_id']]);
+        $category_data = $req->fetch();
+        $category = new Category;
+
+        $category->id = $category_data['category_id'];
+        $category->name = $category_data['category_name'];
+
+        $article->category = $category;
 
         $req = $this->bdd->prepare("SELECT * FROM section WHERE article_id = ?");
         $req->execute([$id]);
-        $data = $req->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($data as $key){
+        $section_data = $req->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($section_data as $key){
             $section = new Section;
             $section->id = $key['section_id'];
             $section->title = $key['section_title'];
@@ -87,6 +96,11 @@ class ArticleRepository extends ConnectBdd{
 
             $article->section[] = $section;
         }
+
+        
+
+
+        // TODO : new Tag, new Comment
 
         return $article;
     }
@@ -120,9 +134,23 @@ class ArticleRepository extends ConnectBdd{
                     $section->body = $key['section_body'];
                     $section->image = $key['section_image'];
                     $section->article = $key['article_id'];
-                }
 
-                $article->section[] = $section;
+                    $article->section[] = $section;
+                }
+            }
+
+            $req = $this->bdd->prepare("SELECT * FROM user");
+            $req->execute();
+            $data = $req->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($data as $key){
+                if($key['user_id'] == $article->user){
+                    $user = new User;
+                    $user->id = $key['user_id'];
+                    $user->name = $key['user_name'];
+                    $user->image = $key['user_image'];
+
+                    $article->user = $user;
+                }
             }
 
 

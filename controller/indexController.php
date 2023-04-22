@@ -2,6 +2,7 @@
 require_once('config/functions.php');
 require_once('model/Article.php');
 require_once('model/Section.php');
+require_once('model/Category.php');
 require_once('model/Tag.php');
 require_once('model/Comment.php');
 require_once('model/User.php');

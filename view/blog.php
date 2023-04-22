@@ -2,6 +2,10 @@
 
 <?php include('include/nav.html'); ?>
 
+<?php 
+$articleRepository = new ArticleRepository;
+$articles = $articleRepository->getArticles();
+?>
     <main id="main">
 
     <!-- ======= Breadcrumbs ======= -->
