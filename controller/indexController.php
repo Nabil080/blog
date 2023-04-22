@@ -66,7 +66,8 @@ function loginTreatment(){
 
                 $response = array(
                     "status" => "failure",
-                    "message" => "Le compte n'est pas activé"
+                    "message" => "Le compte n'est pas activé !",
+                    "activate" => "index.php?action=validate_mail&token=".$user->token
                 );
 
                 echo json_encode($response);

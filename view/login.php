@@ -38,10 +38,11 @@
                                 <input type="password" name="password" id="password" placeholder="Password"/>
                             </div>
                             <div id="error_message" style="color:red"></div>
+                            <a id="activate_account" style="color:black;display:none">Renvoyer le mail d'activation</a>
                             <div class="form-group form-button">
                                 <input type="submit" name="signin" id="signin" class="form-submit" value="Log in"/>
                             </div>
-                            <a href="?action=reset_password">Mot de passe oublié ?</a>
+                            <a href="?action=reset_password" style="color:black">Mot de passe oublié ?</a>
                         </form>
                         <div class="social-login">
                             <span class="social-label">Or login with</span>
@@ -77,6 +78,12 @@ loginForm.addEventListener('submit', function(event) {
             const errorMessage = document.querySelector('#error_message');
             errorMessage.innerText = data.message;
             errorMessage.style.display = 'block';
+
+            if(data.activate){
+                const activateAccount = document.querySelector('#activate_account');
+                activateAccount.style.display = 'block';
+                activateAccount.href = data.activate;
+            }
         }
     })
     .catch(error => console.error(error));
