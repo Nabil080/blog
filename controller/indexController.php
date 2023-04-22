@@ -40,6 +40,9 @@ function signUpTreatment(){
 
 function loginTreatment(){
     $userRepo = new UserRepository;
+    // $postData = json_decode(file_get_contents("php://input"), true);
+    // var_dump($postData);
+    // var_dump($_POST);
     $user = $userRepo->getUserByMail($_POST['mail']);
 
     if($user != []){
@@ -51,22 +54,38 @@ function loginTreatment(){
                 'mail' => $user->mail,
                 'role' => $user->role
             ];
-            header('Location: index.php');
+            // header('Location: index.php');
+            $response = array(
+                "status" => "success",
+                "message" => "Succès"
+            );
+            
+            echo json_encode($response);
             }else{
-                $_SESSION['error'] = 'activate_account';
+                // $_SESSION['error'] = 'activate_account';
 
-                header('Location: index.php?action=login&token='.$user->token);
+                $response = array(
+                    "status" => "failure",
+                    "message" => "Le compte n'est pas activé"
+                );
+
+                echo json_encode($response);
+                // header('Location: index.php?action=login&token='.$user->token);
             }
         
         }else{
-
-            $_SESSION['error'] = 'invalid_password';
-            header('Location: index.php?');
+            $response = array(
+                "status" => "failure",
+                "message" => "'Mot de passe invalide ! (Une majuscule, un chiffre et un charactère spécial minimum)'"
+            );
+            
+            echo json_encode($response);
+            // $_SESSION['error'] = 'invalid_password';
+            // header('Location: index.php?');
         }
     }else{
-        // echo 'Email incorrect';
-        
-        header('Location: index.php?');
+        // gestion erreurs mail traité dans getUserMail()
+        // header('Location: index.php?');
     }
 }
 

@@ -73,11 +73,22 @@ class UserRepository extends ConnectBdd{
                 return $user;
             }else{
 
+                $response = array(
+                    "status" => "failure",
+                    "message" => "E-mail lié a aucun compte"
+                );
+                echo json_encode($response);
+
                 return [];
 
             }
         }else{
-            $_SESSION['error'] = 'missing_mail';
+            // $_SESSION['error'] = 'missing_mail';
+            $response = array(
+                "status" => "failure",
+                "message" => "E-mail invalide"
+            );
+            echo json_encode($response);
 
             return [];
         }
