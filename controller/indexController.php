@@ -16,27 +16,28 @@ function signUpTreatment(){
 
     if($user->createToInsert($_POST)){
         $check_existing = $userRepo->getUserByMail($_POST['mail']);
-        var_dump($check_existing);
         if($check_existing == []){
             $userRepo->insertUser($user);
-            echo 'Un mail pour valider votre compte vous a été envoyé !';
-            echo '<a href="?action=validate_mail&token='.$user->token.'">Lien temporaire pour valider le compte </a> ';
-
-            // header('Location: index.php');
+            // traitement message de succès dans insertUser
         }else{
-            // echo 'Email déjà existant';
-            $_SESSION['error'] = 'existing_mail';
-            header('Location: index.php?action=signup');
+            $response = array(
+                "status" => "failure",
+                "message" => "Cet email est déjà utilisé !",
+                "connect" => "index.php?action=login&mail=".$_POST['mail']
+            );
+
+            echo json_encode($response);
         }
     }else{
-        // echo 'Elements manquants';
-        // session error traité dans "createToInsert()"
-        header('Location: index.php?action=signup');
+        // traitement des erreurs présent dans createToInsert (dans les fonctions)
     }
 }
 
 function loginTreatment(){
     $userRepo = new UserRepository;
+    // $postData = json_decode(file_get_contents("php://input"), true);
+    // var_dump($postData);
+    // var_dump($_POST);
     $user = $userRepo->getUserByMail($_POST['mail']);
 
     if($user != []){
@@ -48,22 +49,39 @@ function loginTreatment(){
                 'mail' => $user->mail,
                 'role' => $user->role
             ];
-            header('Location: index.php');
+            // header('Location: index.php');
+            $response = array(
+                "status" => "success",
+                "message" => "Succès"
+            );
+            
+            echo json_encode($response);
             }else{
-                $_SESSION['error'] = 'activate_account';
+                // $_SESSION['error'] = 'activate_account';
 
-                header('Location: index.php?action=login&token='.$user->token);
+                $response = array(
+                    "status" => "failure",
+                    "message" => "Le compte n'est pas activé !",
+                    "activate" => "index.php?action=validate_mail&token=".$user->token
+                );
+
+                echo json_encode($response);
+                // header('Location: index.php?action=login&token='.$user->token);
             }
         
         }else{
-
-            $_SESSION['error'] = 'invalid_password';
-            header('Location: index.php?');
+            $response = array(
+                "status" => "failure",
+                "message" => "Mot de passe invalide ! (Une majuscule, un chiffre et un charactère spécial minimum)"
+            );
+            
+            echo json_encode($response);
+            // $_SESSION['error'] = 'invalid_password';
+            // header('Location: index.php?');
         }
     }else{
-        // echo 'Email incorrect';
-        
-        header('Location: index.php?');
+        // gestion erreurs mail traité dans getUserMail()
+        // header('Location: index.php?');
     }
 }
 

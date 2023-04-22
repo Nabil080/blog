@@ -28,27 +28,21 @@
 
                     <div class="signin-form">
                         <h2 class="form-title">Login</h2>
-                        <form action="?action=login_php" method="POST" class="register-form" id="login-form">
+                        <form class="register-form" id="login-form">
                             <div class="form-group">
                                 <label for="mail"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                                <input type="email" name="mail" id="mail" placeholder="Your mail"/>
+                                <input type="email" name="mail" id="mail" placeholder="Your mail" <?php if(isset($_GET['mail'])){echo 'value="'.$_GET['mail'].'"';} ?>/>
                             </div>
                             <div class="form-group relative">
                                 <label for="=password"><i class="zmdi zmdi-lock"></i></label>
                                 <input type="password" name="password" id="password" placeholder="Password"/>
                             </div>
-                            <?php
-                            if(isset($_SESSION['error'])){
-                                if($_SESSION['error']=='invalid_mail'){ echo '<div style="color:red">Email invalide !</div>'; }
-                                if($_SESSION['error']=='missing_mail'){ echo '<div style="color:red">Cet email n\'est lié à aucun compte !</div>'; }
-                                if($_SESSION['error']=='invalid_password'){ echo '<div style="color:red">Mot de passe incorrect !</div>'; }
-                                if($_SESSION['error']=='activate_account'){ echo '<div style="color:red">Votre compte n\'est pas activé !</div>
-                                    <a href="?action=validate_mail&token='.$_GET['token'].'">Renvoyer un mail de validation </a>'; }
-                            } ?>
+                            <div id="error_message" style="color:red"></div>
+                            <a id="activate_account" style="color:black;display:none">Renvoyer le mail d'activation</a>
                             <div class="form-group form-button">
                                 <input type="submit" name="signin" id="signin" class="form-submit" value="Log in"/>
                             </div>
-                            <a href="?action=reset_password">Mot de passe oublié ?</a>
+                            <a href="?action=reset_password" style="color:black">Mot de passe oublié ?</a>
                         </form>
                         <div class="social-login">
                             <span class="social-label">Or login with</span>
@@ -62,8 +56,39 @@
                 </div>
             </div>
         </section>
-
     </div>
+<script>
+const loginForm = document.querySelector('#login-form');
+
+loginForm.addEventListener('submit', function(event) {
+    event.preventDefault(); // prevent default form submission behavior
+
+    // handle form submission with fetch
+    const formData = new FormData(loginForm);
+    fetch('index.php?action=login_php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            window.location.href = 'index.php';
+        } else {
+            const errorMessage = document.querySelector('#error_message');
+            errorMessage.innerText = data.message;
+            errorMessage.style.display = 'block';
+
+            if(data.activate){
+                const activateAccount = document.querySelector('#activate_account');
+                activateAccount.style.display = 'block';
+                activateAccount.href = data.activate;
+            }
+        }
+    })
+    .catch(error => console.error(error));
+});
+</script>
+
 
     <!-- JS -->
     <srcipt src="assets/vendor/jquery/jquery.min.js"></srcipt>

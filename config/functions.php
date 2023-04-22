@@ -12,12 +12,20 @@ function securizeString(string $string)
 
     if(!isset($string) OR empty($string) OR strlen($string) < 3){
         if(strlen($string) < 3){
-            $_SESSION['error'] = 'short_name';
+            $response = array(
+                "status" => "failure",
+                "message" => "Le nom est trop court"
+            );
+            echo json_encode($response);
         }else{
 
-            $_SESSION['error'] = 'invalid_name';
-            return false;
+            $response = array(
+                "status" => "failure",
+                "message" => "Le nom est invalide"
+            );
+            echo json_encode($response);
         }
+        return false;
     }else{
         $safe_string = filter_var(trim($string), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
@@ -28,7 +36,11 @@ function securizeMail(string $mail)
 {
     if(!isset($mail) OR empty($mail) OR !filter_var($mail, FILTER_VALIDATE_EMAIL)){
 
-        $_SESSION['error'] = 'invalid_mail';
+        $response = array(
+            "status" => "failure",
+            "message" => "Email invalide"
+        );
+        echo json_encode($response);
         return false;
     }else{
         $safe_mail = filter_var(trim($mail), FILTER_SANITIZE_EMAIL);
@@ -46,13 +58,23 @@ function securizePassword(string $password, string $confirm_password)
         return $hashed_password;
     }else{
         if($confirm_password != $password){
-            $_SESSION['error'] = 'confirm_password';
+
+            $response = array(
+                "status" => "failure",
+                "message" => "Les mots de passes ne correspondent pas"
+            );
+            echo json_encode($response);
 
             return false;
         }
 
         if(!preg_match($pattern, $password)){
-            $_SESSION['error'] = 'invalid_password';
+
+            $response = array(
+                "status" => "failure",
+                "message" => "Mot de passe invalide ! (Une majuscule, un chiffre et un charactère spécial minimum)"
+            );
+            echo json_encode($response);
 
             return false;
         }

@@ -72,11 +72,24 @@ class UserRepository extends ConnectBdd{
                 return $user;
             }else{
 
+                if(str_contains("?signup",$_SERVER['HTTP_REFERER'])){
+                    $response = array(
+                        "status" => "failure",
+                        "message" => "E-mail lié a aucun compte"
+                    );
+                    echo json_encode($response);
+                }
+
                 return [];
 
             }
         }else{
-            $_SESSION['error'] = 'missing_mail';
+            // $_SESSION['error'] = 'missing_mail';
+            $response = array(
+                "status" => "failure",
+                "message" => "E-mail invalide"
+            );
+            echo json_encode($response);
 
             return [];
         }
@@ -84,13 +97,17 @@ class UserRepository extends ConnectBdd{
 
     public function insertUser(User $user){
         $req = $this->bdd->prepare("INSERT INTO user
-            (user_name, user_mail, user_password, user_image, user_token, user_active, role_id)
-        VALUES
-            (?,?,?,?,?,?,?)");
+            (user_name, user_mail, user_password, user_image, user_token, user_active, role_id) VALUES (?,?,?,?,?,?,?)");
         $req->execute(
             [$user->name, $user->mail, $user->password, $user->image, $user->token, $user->active, $user->role]);
 
-    // send mail to $user->mail, "Vérifiez votre compte: "http://localhost/sltromain/index.php?action=validate_mail&token=".<?= $user->token? >"
+        $response = array(
+            "status" => "success",
+            "message" => "Un mail pour valider votre compte vous a été envoyé !",
+            "activate" => "index.php?action=validate_mail&token=".$user->token
+        );
+
+        echo json_encode($response);
     }
 
     public function getUserByID(string $id){
