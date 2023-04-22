@@ -36,10 +36,8 @@ if(!isset($_SESSION['user'])){
     }else{
         login();
     }
-}elseif($_SESSION['user']['role'] != 1){
-    require('user.php');
 }else{
-    require('admin.php');
+    require('user.php');
 }
 
 

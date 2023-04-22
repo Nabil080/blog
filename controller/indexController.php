@@ -1,5 +1,6 @@
 <?php
 require_once('config/functions.php');
+require_once('model/Article.php');
 require_once('model/Comment.php');
 require_once('model/User.php');
 function login(){
