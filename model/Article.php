@@ -26,7 +26,8 @@ class Article{
         $this->image = $articleForm['image'];
         $this->category = $articleForm['category'];
         $this->user = $_SESSION['user']['id'] ;
-        $this->tag = $articleForm['tag'];
+        $this->tag = isset($articleForm['tag']) ?  $articleForm['tag'] : null;
+        // $this->section = $articleForm['section'];
         
         return true;
     }
@@ -66,6 +67,34 @@ class ArticleRepository extends ConnectBdd{
         }
 
         return $article;
+    }
+
+    public function getArticles(){
+        $req = $this->bdd->prepare("SELECT * FROM article");
+        $req->execute();
+        $data = $req->fetchAll();
+        $articles = [];
+        foreach($data as $key){
+            $article = new Article;
+            $article->id = $key['article_id'];
+            $article->name = $key['article_name'];
+            $article->date = $key['article_date'];
+            $article->intro = $key['article_intro'];
+            $article->quote = $key['article_quote'];
+            $article->image = $key['article_image'];
+            $article->category = $key['category_id'];
+            $article->user = $key['user_id'];
+            $req = $this->bdd->prepare("SELECT * FROM article_tag WHERE article_id = ?");
+            $req->execute([$article->id]);
+            $data = $req->fetchAll();
+            foreach ($data as $key){
+                $article->tag[] = $key['tag_id'];
+            }
+
+            $articles[]= $article;
+        }
+
+        return $articles;
     }
 }
 
