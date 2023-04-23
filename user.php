@@ -12,6 +12,9 @@
                 case'blog_article':
                     blogArticle();
                     break;
+                case'comment_php':
+                    comment();
+                    break;
                 default:
                     homepage();
                     break;

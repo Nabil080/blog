@@ -17,5 +17,8 @@ function blogArticle(){
     require ('view/blogArticle.php') ;
 }
 
+function Comment(){
+    echo json_encode($_POST);
+}
 
 ?>

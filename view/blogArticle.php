@@ -133,9 +133,11 @@ $half_intro = $count_words / 2;
               </div>
             </div><!-- End post author -->
 
-            <div class="comments">
+            <div id="comments" class="comments">
+            <h4 class="comments-count"><?=count($article->comment)?> comments</h4>
+            <div id="new_comments"></div>
 
-              <h4 class="comments-count"><?=count($article->comment)?> comments</h4>
+
               <?php foreach($article->comment as $comment){ ?>
                 <div id="comment-<?=$comment->id?>" class="comment">
                   <div class="d-flex">
@@ -179,7 +181,7 @@ $half_intro = $count_words / 2;
 
                 <h4>Leave a Reply</h4>
                 <p>Your email address will not be published. Required fields are marked * </p>
-                <form action="">
+                <form id="comment-form">
                   <div class="row">
                     <div class="col-md-6 form-group">
                       <input name="name" type="text" class="form-control" disabled value="<?=$_SESSION['user']['name']?>"  placeholder="Your Name*">
@@ -187,15 +189,114 @@ $half_intro = $count_words / 2;
                     <div class="col-md-6 form-group">
                       <input name="email" type="text" class="form-control" disabled value="<?=$_SESSION['user']['mail']?>" placeholder="Your Email*">
                     </div>
-                  </div>
+                    <input style="display:none;" name="article" value="<?=$article->id?>">
+                    <input style="display:none;" name="user_id" value="<?=$_SESSION['user']['id']?>">
+                    </div>
                   <div class="row">
                     <div class="col form-group">
                       <textarea name="comment" class="form-control" placeholder="Your Comment*"></textarea>
                     </div>
                   </div>
                   <button type="submit" class="btn btn-primary">Post Comment</button>
-
                 </form>
+
+              <script>
+
+                      // TODO : TRAITEMENT AJAX
+                      const myForm = document.querySelector("#comment-form")
+                      myForm.addEventListener('submit',function(event){
+                        event.preventDefault();
+
+                        const formData = new FormData(myForm);
+                        fetch('index.php?action=comment_php',{
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                          console.log(data);
+
+                                  // Get the #comments div
+                                  const commentsDiv = document.getElementById("new_comments");
+
+                                  // Create the outer div element
+                                  const commentDiv = document.createElement("div");
+                                  commentDiv.className = "comment";
+
+                                  // Create the d-flex div element
+                                  const dFlexDiv = document.createElement("div");
+                                  dFlexDiv.className = "d-flex";
+
+                                  // Create the comment-img div element and its child img element
+                                  const commentImgDiv = document.createElement("div");
+                                  commentImgDiv.className = "comment-img";
+                                  const img = document.createElement("img");
+                                  img.src = "https://www.civictheatre.ie/wp-content/uploads/2016/05/blank-profile-picture-973460_960_720.png";
+                                  img.alt = "";
+                                  commentImgDiv.appendChild(img);
+
+                                  // Create the h5 element and its child a and reply elements
+                                  const h5 = document.createElement("h5");
+                                  const a1 = document.createElement("a");
+                                  a1.href = "";
+                                  a1.textContent = "Name";
+                                  const a2 = document.createElement("a");
+                                  a2.href = "#";
+                                  a2.className = "reply";
+                                  const i = document.createElement("i");
+                                  i.className = "bi bi-reply-fill";
+                                  a2.appendChild(i);
+                                  a2.appendChild(document.createTextNode(" Reply"));
+                                  h5.appendChild(a1);
+                                  h5.appendChild(document.createTextNode(" "));
+                                  h5.appendChild(a2);
+
+
+                                  // Create the wrapper div for h5, time, and p elements
+                                  const wrapperDiv = document.createElement("div");
+
+                                  // Create the time element
+                                  const time = document.createElement("time");
+                                  time.dateTime = "2020-01-01";
+                                  time.textContent = new Date().toLocaleDateString('en-US', {day: 'numeric', month: 'short', year: 'numeric'});
+
+                                  // Create the p element and set its text content
+                                  const p = document.createElement("p");
+                                  p.textContent = data.comment;
+
+                                  // Add the elements to the DOM
+                                  commentDiv.appendChild(dFlexDiv);
+                                  dFlexDiv.appendChild(commentImgDiv);
+                                  dFlexDiv.appendChild(wrapperDiv);
+                                    wrapperDiv.appendChild(h5);
+                                    wrapperDiv.appendChild(time);
+                                    wrapperDiv.appendChild(p);
+                                  commentsDiv.parentNode.insertBefore(commentDiv, commentsDiv.nextSibling);
+
+
+
+
+
+                        })
+
+
+
+
+                      })
+
+
+
+
+
+
+
+
+
+
+
+
+
+              </script>
 
               </div>
 
