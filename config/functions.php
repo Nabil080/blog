@@ -100,7 +100,9 @@ function securizeImage(array $filesImage){
 
         $extension = explode('.', $nameFile);
 
-        $max_size =500000;
+
+        $max_size =1000000;
+
 
         if(in_array($typeFile, $type))
         {

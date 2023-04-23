@@ -3,7 +3,7 @@
 // include('include/nav.html'); 
 ?>
 
-<form action="" method="post">
+<form enctype="multipart/form-data" action="" method="post">
 
     <label>Nom de l'article</label>
     <input type="text" name="name" placeholder="nom de l'article">
