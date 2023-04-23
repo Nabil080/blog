@@ -45,6 +45,39 @@ class User{
 
         return true;
     }
+
+    public function createToModify(array $userPost):bool{
+
+
+        if(isset($userPost['name'])){    
+            if(securizeString($userPost['name']) != false){
+                $this->name = securizeString($userPost['name']);
+            }else{
+                
+                return false;
+            }
+        }
+
+        if(isset($userPost['mail'])){
+            if(securizeMail($userPost['mail']) != false){
+                $this->mail = securizeMail($userPost['mail']);
+            }else{
+
+                return false;
+            }
+        }
+
+        if(isset($userPost['description'])){
+            if(securizeString($userPost['description']) != false){
+                $this->description = securizeString($userPost['description']);
+            }else{
+
+                return false;
+            }
+        }
+
+            return true;
+    }
 }
 
 class UserRepository extends ConnectBdd{
@@ -187,6 +220,31 @@ class UserRepository extends ConnectBdd{
 
             return true;
         }
+    }
+
+    public function updateUser(User $user){
+
+        if($user->name != null){
+            $req = $this->bdd->prepare("UPDATE user  SET user_name = ? WHERE user_id = ?");
+            $req->execute([$user->name,$_SESSION['user']['id']]);
+        }
+
+        if($user->mail != null){
+            $req = $this->bdd->prepare("UPDATE user  SET user_mail = ? WHERE user_id = ?");
+            $req->execute([$user->mail,$_SESSION['user']['id']]);
+        }
+
+        if($user->description != null){
+            $req = $this->bdd->prepare("UPDATE user  SET user_description = ? WHERE user_id = ?");
+            $req->execute([$user->description,$_SESSION['user']['id']]);
+        }
+
+        $response = array(
+            "status" => "success",
+            "message" => "Vos informations ont bien été modifiées !",
+        );
+
+        echo json_encode($response);
     }
 }
 

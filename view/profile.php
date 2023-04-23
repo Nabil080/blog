@@ -35,12 +35,12 @@ $articles = $articleRepo->getUserArticles($_SESSION['user']['id']);
                   <div class="col-6 mb-3">
                     <h6>Email</h6>
                     <p class="text-muted"><?=$user->mail?></p>
-                    <input style="display:none" type="email" name="email" value="<?=$user->mail?>">
+                    <input style="display:none" type="email" name="mail" value="<?=$user->mail?>">
                   </div>
                   <div class="col-6 mb-3">
                     <h6>Pseudo</h6>
-                    <p class="text-muted"><?=$user->name?></p>
-                    <input style="display:none" type="text" name="pseudo" value="<?=$user->name?>">
+                    <p id="user-name" class="text-muted"><?=$user->name?></p>
+                    <input style="display:none" type="text" name="name" value="<?=$user->name?>">
                   </div>
                 </div>
                 <h6>Informations rédacteur</h6>
@@ -51,6 +51,7 @@ $articles = $articleRepo->getUserArticles($_SESSION['user']['id']);
                     <input style="display:none" type="text" name="description" value="<?=$user->description?>">
                     <button style="display:none" type="submit" name="submit">Modifier</button>
                 </div>
+                <div id="error-message" style="display:none;color:orange;"></div>
                 <div class="">
                     <h6>Articles postés</h6>
                     <div class="mt-3">
@@ -82,11 +83,35 @@ $articles = $articleRepo->getUserArticles($_SESSION['user']['id']);
 
 <script>
 
+const myForm = document.querySelector("#modifyForm");
+const formText = myForm.querySelectorAll("p");
+const formInputs = myForm.querySelectorAll("input");
+const formButton = myForm.querySelector("button");
+
+myForm.addEventListener("submit", function(event){
+    event.preventDefault();
+
+    const formData = new FormData(myForm);
+    fetch('index.php?action=profile_php',{
+        method:'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        switchToForm();
+        const errorMessage = myForm.querySelector("#error-message");
+        errorMessage.style.display = "block";
+        errorMessage.innerText = data.message ;
+        console.log("salut");
+        console.log(data);
+    })
+    .catch(error => console.error(error));
+});
+
+
+
+
 function switchToForm(){
-    const myForm = document.querySelector("#modifyForm");
-    const formText = myForm.querySelectorAll("p");
-    const formInputs = myForm.querySelectorAll("input");
-    const formButton = myForm.querySelector("button");
 
     for (let i = 0; i < formText.length; i++) {
         if (formText[i].style.display === "none") {
@@ -109,8 +134,8 @@ function switchToForm(){
     }else{
         formButton.style.display = "none";
     }
-
 }
+
 </script>
 
 
