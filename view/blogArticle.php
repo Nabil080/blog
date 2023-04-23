@@ -325,7 +325,7 @@ $half_intro = $count_words / 2;
                     <?php  $articles = $articleRepo->getArticles(5); 
                     foreach($articles as $article){?>
                   <div class="post-item">
-                    <img src="upload/<?=$article->image?>" alt="">
+                    <img src="upload/<?=$article->image?>" alt="" width="80px" height="60px">
                     <div>
                       <h4><a href="?action=blog_article&article=<?=$article->id?>"><?=$article->name?></a></h4>
                       <time datetime="2020-01-01"><?=formatDate($article->date)?></time>

@@ -117,7 +117,7 @@ class UserRepository extends ConnectBdd{
                 return $user;
             }else{
 
-                if(str_contains("?signup",$_SERVER['HTTP_REFERER'])){
+                if(!str_contains("?signup",$_SERVER['HTTP_REFERER'])){
                     $response = array(
                         "status" => "failure",
                         "message" => "E-mail lié a aucun compte"
