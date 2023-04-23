@@ -5,6 +5,10 @@ function logout(){
     login();
 }
 
+function profile(){
+    require ('view/profile.php') ;
+}
+
 function homepage(){
     require ('view/homepage.php') ;
 }

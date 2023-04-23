@@ -6,6 +6,9 @@
                 case 'logout':
                     logout();
                     break;
+                case'profile':
+                    profile();
+                    break;
                 case'blog':
                     blog();
                     break;
