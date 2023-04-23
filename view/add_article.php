@@ -43,7 +43,7 @@ $articleRepository = new ArticleRepository;
 $articles = $articleRepository->getArticles();
 ?>
 
-<form action="" method="post">
+<form enctype="multipart/form-data" action="" method="post">
 
     <select name="article_id">
         <?php foreach($articles as $article){ ?>

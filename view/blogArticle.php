@@ -119,7 +119,7 @@ $half_intro = $count_words / 2;
                   <a href="https://instagram.com/#"><i class="biu bi-instagram"></i></a>
                 </div>
                 <p>
-                  description de l'utilisateur
+                  <?=$article->user->description?>
                 </p>
               </div>
             </div><!-- End post author -->

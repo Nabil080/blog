@@ -11,9 +11,27 @@ class Section{
 
     public function createToInsert(array $sectionForm):bool{
 
-        $this->title = $sectionForm['section_title'];
-        $this->body = $sectionForm['section_text'];
-        $this->image = $sectionForm['section_image'];
+        if(securizeString($sectionForm['section_title']) == false){
+
+            return false;
+        }else{
+            $this->title = securizeString($sectionForm['section_title']);
+        }
+        
+        if(securizeString($sectionForm['section_text']) == false){
+
+            return false;
+        }else{
+            $this->body = securizeString($sectionForm['section_text']);
+        }
+
+        $this->image = securizeImage($_FILES['section_image']);
+        if($this->image == false){
+        //    message d'erreurs dans securizeImage
+
+            return false;
+        }
+
         $this->article = $sectionForm['article_id'];
 
         return true;
