@@ -96,8 +96,8 @@ class ArticleRepository extends ConnectBdd{
 
     public function getArticles($limitRequest = null){
         $limit = $limitRequest == null ? "" : "LIMIT ".$limitRequest;
-        
-        $req = $this->bdd->prepare("SELECT * FROM article $limit");
+
+        $req = $this->bdd->prepare("SELECT * FROM article ORDER BY article_id DESC $limit ");
         $req->execute();
         $data = $req->fetchAll(PDO::FETCH_ASSOC);
         $articles = [];

@@ -112,7 +112,7 @@ function securizeComment(string $comment)
         }
         return false;
     }else{
-        $safe_comment = filter_var(trim($comment), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $safe_comment = trim($comment);
 
         return $safe_comment;
     }

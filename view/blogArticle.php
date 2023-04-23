@@ -3,8 +3,9 @@
 <?php include('include/nav.html'); ?>
 
 <?php 
+$articleId = isset($_GET['article']) ? intval($_GET['article']) : 1;
 $articleRepo = new ArticleRepository;
-$article = $articleRepo->getArticle(2);
+$article = $articleRepo->getArticle($articleId);
 // var_dump($article);
 
 // $count_intro = str_word_count($article->intro);
@@ -70,7 +71,7 @@ $half_intro = $count_words / 2;
                 <?php for($i=0;$i<$half_intro;$i++){echo $words[$i]." ";}?>
                 </p>
                 
-                <?php if(isset($article->quote)){ ?>
+                <?php if($article->quote){ ?>
                 <blockquote>
                   <p>
                   <?=$article->quote?>
