@@ -94,56 +94,22 @@ class ArticleRepository extends ConnectBdd{
         return $article;
     }
 
-    public function getArticles(){
-        $req = $this->bdd->prepare("SELECT * FROM article");
+    public function getArticles($limitRequest = null){
+        $limit = $limitRequest == null ? "" : "LIMIT ".$limitRequest;
+        
+        $req = $this->bdd->prepare("SELECT * FROM article $limit");
         $req->execute();
         $data = $req->fetchAll(PDO::FETCH_ASSOC);
         $articles = [];
         foreach($data as $key){
             $article = new Article;
-            $article->id = $key['article_id'];
-            $article->name = $key['article_name'];
-            $article->date = $key['article_date'];
-            $article->intro = $key['article_intro'];
-            $article->quote = $key['article_quote'];
-            $article->image = $key['article_image'];
-            $article->category = $key['category_id'];
-            $article->user = $key['user_id'];
-
-            $req = $this->bdd->prepare("SELECT * FROM section");
-            $req->execute([]);
-            $data = $req->fetchAll(PDO::FETCH_ASSOC);
-            foreach ($data as $key){
-                if($key['article_id'] == $article->id){
-                    $section = new Section;
-                    $section->id = $key['section_id'];
-                    $section->title = $key['section_title'];
-                    $section->body = $key['section_body'];
-                    $section->image = $key['section_image'];
-                    $section->article = $key['article_id'];
-
-                    $article->section[] = $section;
-                }
-            }
-
-            $req = $this->bdd->prepare("SELECT * FROM user");
-            $req->execute();
-            $data = $req->fetchAll(PDO::FETCH_ASSOC);
-            foreach ($data as $key){
-                if($key['user_id'] == $article->user){
-                    $user = new User;
-                    $user->id = $key['user_id'];
-                    $user->name = $key['user_name'];
-                    $user->image = $key['user_image'];
-
-                    $article->user = $user;
-                }
-            }
-
+            $articleRepo = new ArticleRepository;
+            $article = $articleRepo->getArticle($key['article_id']);
 
             $articles[]= $article;
         }
 
+        
         return $articles;
     }
 

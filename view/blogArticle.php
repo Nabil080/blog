@@ -115,11 +115,7 @@ $half_intro = $count_words / 2;
             </article><!-- End blog post -->
 
             <div class="post-author d-flex align-items-center">
-              <?php if (isset($article->user->image)){ ?>
               <img src="assets/img/blog/<?=$article->user->image?>" class="rounded-circle flex-shrink-0" alt="">
-              <?php }else{ ?>
-              <img src="https://www.civictheatre.ie/wp-content/uploads/2016/05/blank-profile-picture-973460_960_720.png" class="rounded-circle flex-shrink-0" alt="">
-                <?php } ?>
               <div>
                 <h4><?=$article->user->name?></h4>
                 <div class="social-links">
@@ -141,11 +137,7 @@ $half_intro = $count_words / 2;
               <?php foreach($article->comment as $comment){ ?>
                 <div id="comment-<?=$comment->id?>" class="comment">
                   <div class="d-flex">
-                    <?php if(isset($comment->user->image)){ ?>
                     <div class="comment-img"><img src="assets/img/blog/<?=$comment->user->image?>" alt=""></div>
-                    <?php }else{?>
-                      <div class="comment-img"><img src="https://www.civictheatre.ie/wp-content/uploads/2016/05/blank-profile-picture-973460_960_720.png" alt=""></div>
-                    <?php } ?>
                     <div>
                       <h5><a href=""><?=$comment->user->name?></a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
                       <time datetime="2020-01-01"><?=formatDate($comment->date)?></time>
@@ -158,11 +150,7 @@ $half_intro = $count_words / 2;
                   <?php foreach($comment->reply as $reply){?>
                   <div id="comment-reply-<?=$reply->id?>" class="comment comment-reply">
                   <div class="d-flex">
-                  <?php if(isset($reply->user->image)){ ?>
                     <div class="comment-img"><img src="assets/img/blog/<?=$reply->user->image?>" alt=""></div>
-                    <?php }else{?>
-                      <div class="comment-img"><img src="https://www.civictheatre.ie/wp-content/uploads/2016/05/blank-profile-picture-973460_960_720.png" alt=""></div>
-                    <?php } ?>
                     <div>
                       <h5><a href=""><?=$reply->user->name?></a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
                       <time datetime="2020-01-01"><?=formatDate($reply->date)?></time>
