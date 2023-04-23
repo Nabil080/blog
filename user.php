@@ -6,6 +6,15 @@
                 case 'logout':
                     logout();
                     break;
+                case'profile':
+                    profile();
+                    break;
+                case'profile_php':
+                    profileTreatment();
+                    break;
+                case'image_php':
+                    userImageTreatment();
+                    break;
                 case'blog':
                     blog();
                     break;

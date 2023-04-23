@@ -51,7 +51,7 @@ $articles = $articleRepository->getArticles($limitRequest);
             <article>
 
               <div class="post-img">
-                <img src="assets/img/blog/<?=$article->image?>" alt="" class="img-fluid">
+                <img src="upload/<?=$article->image?>" alt="" class="img-fluid">
               </div>
 
               <p class="post-category"><?=$article->category->name?></p>
@@ -61,7 +61,7 @@ $articles = $articleRepository->getArticles($limitRequest);
               </h2>
 
               <div class="d-flex align-items-center">
-                <img src="assets/img/blog/<?=$article->user->image?>" alt="" class="img-fluid post-author-img flex-shrink-0">
+                <img src="upload/<?=$article->user->image?>" alt="" class="img-fluid post-author-img flex-shrink-0">
                 <div class="post-meta">
                   <p class="post-author-list"><?=$article->user->name?></p>
                   <p class="post-date">
