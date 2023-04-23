@@ -223,7 +223,7 @@ $half_intro = $count_words / 2;
                                   const commentImgDiv = document.createElement("div");
                                   commentImgDiv.className = "comment-img";
                                   const img = document.createElement("img");
-                                  img.src = "https://www.civictheatre.ie/wp-content/uploads/2016/05/blank-profile-picture-973460_960_720.png";
+                                  img.src = data.image;
                                   img.alt = "";
                                   commentImgDiv.appendChild(img);
 
@@ -231,7 +231,7 @@ $half_intro = $count_words / 2;
                                   const h5 = document.createElement("h5");
                                   const a1 = document.createElement("a");
                                   a1.href = "";
-                                  a1.textContent = "Name";
+                                  a1.textContent = data.name;
                                   const a2 = document.createElement("a");
                                   a2.href = "#";
                                   a2.className = "reply";
@@ -249,8 +249,8 @@ $half_intro = $count_words / 2;
 
                                   // Create the time element
                                   const time = document.createElement("time");
-                                  time.dateTime = "2020-01-01";
-                                  time.textContent = new Date().toLocaleDateString('en-US', {day: 'numeric', month: 'short', year: 'numeric'});
+                                  time.dateTime = data.date;
+                                  time.textContent = data.date;
 
                                   // Create the p element and set its text content
                                   const p = document.createElement("p");
@@ -333,7 +333,7 @@ $half_intro = $count_words / 2;
                   <div class="post-item">
                     <img src="upload/<?=$article->image?>" alt="">
                     <div>
-                      <h4><a href="blog-details.html"><?=$article->name?></a></h4>
+                      <h4><a href="?action=blog_article&article=<?=$article->id?>"><?=$article->name?></a></h4>
                       <time datetime="2020-01-01"><?=formatDate($article->date)?></time>
                     </div>
                   </div>

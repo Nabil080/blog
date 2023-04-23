@@ -8,8 +8,13 @@ $userRepo = new UserRepository;
 $user = $userRepo->getUserById($userId);
 $role = $user->role != 1 ? "Utilisateur" : "Administrateur";
 
-$articleRepo = new ArticleRepository; 
-$articles = $articleRepo->getUserArticles($_SESSION['user']['id']); 
+if($user->role == 1){
+    $articleRepo = new ArticleRepository; 
+    $articles = $articleRepo->getUserArticles($_SESSION['user']['id']);
+}
+
+$commentRepo = new CommentRepository;
+$comments = $commentRepo->getUserComments($_SESSION['user']['id']);
 ?>
 
 <section class="vh-100" style="background-color: #f4f5f7;">
@@ -21,7 +26,7 @@ $articles = $articleRepo->getUserArticles($_SESSION['user']['id']);
             <div class="col-md-4 gradient-custom text-center text-white"
               style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
               <img src="upload/<?=$user->image?>" alt="Avatar" class="img-fluid mt-5" style="width: 80px;"/>
-              <form enctype="multipart/form-data" id="imageForm" style="display:none;" method="post" action="?action=image_php">
+              <form enctype="multipart/form-data" id="imageForm" style="display:none !important" method="post" action="?action=image_php">
                 <input type="file" name="image">
                 <button type="submit" name="submit">Changer</button>
               </form>
@@ -57,8 +62,7 @@ $articles = $articleRepo->getUserArticles($_SESSION['user']['id']);
                   </div>
 
                 </div>
-                <?php if($user->role == 1){ ?>
-                <h6>Informations rédacteur</h6>
+                <h6>Activité </h6>
                 <hr class="mt-0 mb-4">
                 <div class="">
                     <h6>Description</h6>
@@ -68,20 +72,34 @@ $articles = $articleRepo->getUserArticles($_SESSION['user']['id']);
                 </div>
                 <div id="error-message" style="display:none;color:orange;"></div>
                 <div class="">
-                    <h6>Articles postés</h6>
-                    <div class="mt-3">
-                    <?php foreach($articles as $article){?>
-                  <div class="post-item">
-                    <img src="upload/<?=$article->image?>" alt="" width="50px">
-                    <div>
-                      <h5><a href="?action=blog_article&article=<?=$article->id?>"><?=$article->name?></a></h5>
-                      <time datetime="2020-01-01"><?=formatDate($article->date)?></time>
-                    </div>
-                  </div>
-                  <?php } ?>
-                    </div>
+                    <?php
+                    if($user->role == 1){ ?>
+                        <h6>Articles postés</h6>
+                        <div class="mt-3">
+                            <?php foreach($articles as $article){?>
+                                <div class="post-item">
+                                    <img src="assets/img/blog/<?=$article->image?>" alt="" width="50px">
+                                    <div>
+                                        <h5><a href="?action=blog_article&article=<?=$article->id?>"><?=$article->name?></a></h5>
+                                        <time datetime="2020-01-01"><?=formatDate($article->date)?></time>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                        </div>
+                    <?php } ?>
+                        <h6>Commentaires postés</h6>
+                        <div class="mt-3">
+                            <?php foreach($comments as $comment){?>
+                                <div class="post-item">
+                                    <p><?=$comment->message?></p>
+                                    <div>
+                                        <h5><a href="?action=blog_article&article=<?=$comment->article->id?>"><?=$comment->article->name?></a></h5>
+                                        <time datetime="2020-01-01"><?=formatDate($comment->date)?></time>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                        </div>
                 </div>
-                <?php } ?>
                 <!-- <div class="d-flex justify-content-start">
                   <a href="#!"><i class="fab fa-facebook-f fa-lg me-3"></i></a>
                   <a href="#!"><i class="fab fa-twitter fa-lg me-3"></i></a>
@@ -103,6 +121,8 @@ const myForm = document.querySelector("#modifyForm");
 const formText = myForm.querySelectorAll("p");
 const formInputs = myForm.querySelectorAll("input");
 const formButton = myForm.querySelector("button");
+const imageForm = document.querySelector("#imageForm");
+
 
 myForm.addEventListener("submit", function(event){
     event.preventDefault();
@@ -123,9 +143,6 @@ myForm.addEventListener("submit", function(event){
     })
     .catch(error => console.error(error));
 });
-
-
-
 
 function switchToForm(){
 
@@ -151,9 +168,9 @@ function switchToForm(){
         formButton.style.display = "none";
     }
 
-    const imageForm = document.querySelector("#imageForm");
+    
 
-    if(imageForm.style.display === "none"){
+    if(imageForm.style.display == "none"){
         imageForm.style.display = "block";
     }else{
         imageForm.style.display = "none";

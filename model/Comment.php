@@ -38,10 +38,18 @@ class CommentRepository extends ConnectBdd{
         $req->execute(
             [$comment->message,$comment->user,$comment->article]);
 
+        $user = new User;
+        $userRepo = new UserRepository;
+        $user = $userRepo->getUserByID($_SESSION['user']['id']);
+        $date = date("d M, Y");
+
         $response = array(
             "status" => "success",
             "message" => "Le commentaire a bien été posté",
             "comment" => $comment->message,
+            "date" => $date,
+            "image" => "upload/".$user->image,
+            "name" => $user->name,
             
         );
 
@@ -77,8 +85,36 @@ class CommentRepository extends ConnectBdd{
         return $comments;
     }
 
+    public function getUserComments($userId){
+        
+        $req = $this->bdd->prepare("SELECT * FROM comment WHERE user_id = ?");
+        $req->execute([$userId]);
+        $data = $req->fetchAll(PDO::FETCH_ASSOC);
+        $comments = [];
+
+        foreach($data as $comment_data){
+            $comment = new Comment;
+            $comment->id = $comment_data['comment_id'];
+            $comment->date = $comment_data['comment_date'];
+            $comment->message = $comment_data['comment_message'];
+
+            $user = new User;
+            $userRepo = new UserRepository;
+            $user = $userRepo->getUserByID($comment_data['user_id']);
+            $comment->user = $user;
+
+            $article = new article;
+            $articleRepo = new articleRepository;
+            $article = $articleRepo->getArticle($comment_data['article_id']);
+            $comment->article = $article;
+
+            $comments[] = $comment;
+
+        }
+
+        return $comments;
+    }
+
 }
-
-
 
 ?>
