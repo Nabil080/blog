@@ -49,22 +49,21 @@ class User{
     public function createToModify(array $userPost):bool{
 
 
-      if(isset($userPost['password']){
- 
-       if(securizePassword($userPost['password'],$userPost['confirm_password']){
+      if(isset($userPost['password'])){
+            if(securizePassword($userPost['password'],$userPost['confirm_password'])){
 
-$this->password = securizePassword($userPost['password'],$userPost['password']);
-}else{
+            $this->password = securizePassword($userPost['password'],$userPost['password']);
+            }else{
 
-return false;
-}
+            return false;
+            }
      }
 
         if(isset($userPost['name'])){    
             if(securizeString($userPost['name']) != false){
                 $this->name = securizeString($userPost['name']);
             }else{
-                
+
                 return false;
             }
         }
@@ -248,6 +247,16 @@ class UserRepository extends ConnectBdd{
         if($user->description != null){
             $req = $this->bdd->prepare("UPDATE user  SET user_description = ? WHERE user_id = ?");
             $req->execute([$user->description,$_SESSION['user']['id']]);
+        }
+
+        if($user->password != null){
+            $req = $this->bdd->prepare("UPDATE user  SET user_password = ? WHERE user_id = ?");
+            $req->execute([$user->password,$_SESSION['user']['id']]);
+        }
+
+        if($user->image != null){
+            $req = $this->bdd->prepare("UPDATE user  SET user_image = ? WHERE user_id = ?");
+            $req->execute([$user->image,$_SESSION['user']['id']]);
         }
 
         $response = array(

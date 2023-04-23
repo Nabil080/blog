@@ -20,9 +20,12 @@ $articles = $articleRepo->getUserArticles($_SESSION['user']['id']);
           <div class="row g-0">
             <div class="col-md-4 gradient-custom text-center text-white"
               style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
-              <img src="assets/img/blog/base_profile.png"
-                alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
-              <h5><?=$user->name?></h5>
+              <img src="upload/<?=$user->image?>" alt="Avatar" class="img-fluid mt-5" style="width: 80px;"/>
+              <form enctype="multipart/form-data" id="imageForm" style="display:none;" method="post" action="?action=image_php">
+                <input type="file" name="image">
+                <button type="submit" name="submit">Changer</button>
+              </form>
+              <h5 class="mt-5"><?=$user->name?></h5>
               <p><?=$role?></p>
               <i style="cursor:pointer" class="far fa-edit mb-5" onclick="switchToForm()"></i>
             </div>
@@ -44,14 +47,17 @@ $articles = $articleRepo->getUserArticles($_SESSION['user']['id']);
                   </div>
 
 
-<div class="col-6 mb-3">
+                <div class="col-6 mb-3">
                     <h6>Mot de passe</h6>
-                    <p id="user-password" class="text-muted">******></p>
+                    <p id="user-password" class="text-muted">******</p>
                     <input style="display:none" type="password" name="password" value="">
-                    <input style="display:none" type="password" name="password-confitm" value="">
+                  </div>
+                  <div class="col-6 mb-3">
+                    <input style="display:none" type="password" name="confirm_password" value="" placeholder="Confirmer le mot de passe">
                   </div>
 
                 </div>
+                <?php if($user->role == 1){ ?>
                 <h6>Informations rédacteur</h6>
                 <hr class="mt-0 mb-4">
                 <div class="">
@@ -66,7 +72,7 @@ $articles = $articleRepo->getUserArticles($_SESSION['user']['id']);
                     <div class="mt-3">
                     <?php foreach($articles as $article){?>
                   <div class="post-item">
-                    <img src="assets/img/blog/<?=$article->image?>" alt="" width="50px">
+                    <img src="upload/<?=$article->image?>" alt="" width="50px">
                     <div>
                       <h5><a href="?action=blog_article&article=<?=$article->id?>"><?=$article->name?></a></h5>
                       <time datetime="2020-01-01"><?=formatDate($article->date)?></time>
@@ -75,6 +81,7 @@ $articles = $articleRepo->getUserArticles($_SESSION['user']['id']);
                   <?php } ?>
                     </div>
                 </div>
+                <?php } ?>
                 <!-- <div class="d-flex justify-content-start">
                   <a href="#!"><i class="fab fa-facebook-f fa-lg me-3"></i></a>
                   <a href="#!"><i class="fab fa-twitter fa-lg me-3"></i></a>
@@ -142,6 +149,14 @@ function switchToForm(){
         formButton.style.display = "block";
     }else{
         formButton.style.display = "none";
+    }
+
+    const imageForm = document.querySelector("#imageForm");
+
+    if(imageForm.style.display === "none"){
+        imageForm.style.display = "block";
+    }else{
+        imageForm.style.display = "none";
     }
 }
 
