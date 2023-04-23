@@ -23,6 +23,7 @@ function securizeString(string $string)
                 "status" => "failure",
                 "message" => "Le nom est invalide"
             );
+
             echo json_encode($response);
         }
         return false;
@@ -32,6 +33,7 @@ function securizeString(string $string)
         return $safe_string;
     }
 }
+
 function securizeMail(string $mail)
 {
     if(!isset($mail) OR empty($mail) OR !filter_var($mail, FILTER_VALIDATE_EMAIL)){
@@ -82,6 +84,39 @@ function securizePassword(string $password, string $confirm_password)
 
 }
 
+function formatDate($date){
+    $DateTime = new DateTime($date);
+    $formatted_date = $DateTime->format('d M, Y');
+
+    return $formatted_date;
+}
+
+function securizeComment(string $comment)
+{
+
+    if(!isset($comment) OR empty($comment) OR strlen($comment) < 3){
+        if(strlen($comment) < 3){
+            $response = array(
+                "status" => "failure",
+                "message" => "Le commentaire est trop court"
+            );
+            echo json_encode($response);
+        }else{
+
+            $response = array(
+                "status" => "failure",
+                "message" => "Le commentaire est invalide !"
+            );
+
+            echo json_encode($response);
+        }
+        return false;
+    }else{
+        $safe_comment = trim($comment);
+
+        return $safe_comment;
+    }
+}
 
 
 // function contactAjax(){

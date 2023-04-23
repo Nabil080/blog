@@ -30,11 +30,12 @@
           <li><a href="#services">Services</a></li>
           <li><a href="#portfolio">Portfolio</a></li>
           <li><a href="#team">Team</a></li>
-          <li><a href="blog.html">Blog</a></li>
+          <li><a href="?action=blog">Blog</a></li>
           <li><a href="#contact">Contact</a></li>
           <li class="dropdown"><a href="#"><span>Profil</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
             <ul>
-              <li><a href="#">Modifier les informations</a></li>
+              <?php if($_SESSION['user']['role'] == 1){echo '<li><a href="?action=admin&admin=add_article">Interface administrateur</a></li>';}?>
+              <li><a href="?action=profile">Modifier les informations</a></li>
               <li><a href="?action=logout">Se déconnecter</a></li>
             </ul>
           </li>

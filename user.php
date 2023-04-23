@@ -1,20 +1,31 @@
 <?php
+    
     if(isset($_GET['action']) && !empty($_GET['action'])){
-        switch($_GET['action']){
-            case 'logout':
-                logout();
-                break;
-            case'blog':
-                blog();
-                break;
-            case'blogArticle':
-                blogArticle();
-                break;
-            default:
-                homepage();
-                break;
+        if($_GET['action'] != 'admin'){
+            switch($_GET['action']){
+                case 'logout':
+                    logout();
+                    break;
+                case'blog':
+                    blog();
+                    break;
+                case'blog_article':
+                    blogArticle();
+                    break;
+                case'comment_php':
+                    comment();
+                    break;
+                default:
+                    homepage();
+                    break;
+            }
+        }elseif($_SESSION['user']['role'] == 1){
+            require('admin.php');
+        }else{
+            homepage();
         }
     }else{
         homepage();
     }
+
 ?>
