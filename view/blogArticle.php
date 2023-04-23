@@ -135,7 +135,7 @@ $half_intro = $count_words / 2;
 
             <div id="comments" class="comments">
             <h4 class="comments-count"><?=count($article->comment)?> comments</h4>
-            <div id="new_comments"></div>
+            
 
 
               <?php foreach($article->comment as $comment){ ?>
@@ -175,7 +175,7 @@ $half_intro = $count_words / 2;
                   <?php } ?>
                 </div>
                 <?php } ?>
-
+                <div id="new_comments"></div>
 
               <div class="reply-form">
 
@@ -190,14 +190,15 @@ $half_intro = $count_words / 2;
                       <input name="email" type="text" class="form-control" disabled value="<?=$_SESSION['user']['mail']?>" placeholder="Your Email*">
                     </div>
                     <input style="display:none;" name="article" value="<?=$article->id?>">
-                    <input style="display:none;" name="user_id" value="<?=$_SESSION['user']['id']?>">
+                    <input style="display:none;" name="user" value="<?=$_SESSION['user']['id']?>">
                     </div>
                   <div class="row">
                     <div class="col form-group">
                       <textarea name="comment" class="form-control" placeholder="Your Comment*"></textarea>
                     </div>
                   </div>
-                  <button type="submit" class="btn btn-primary">Post Comment</button>
+                  <p id="message" style="color:orange;"></p>
+                  <button id="sub-com" type="submit" class="btn btn-primary">Post Comment</button>
                 </form>
 
               <script>
@@ -214,8 +215,10 @@ $half_intro = $count_words / 2;
                         })
                         .then(response => response.json())
                         .then(data => {
-                          console.log(data);
+                          const message = document.querySelector('#message');
+                          message.innerText = data.message;
 
+                          if(data.status == "success"){
                                   // Get the #comments div
                                   const commentsDiv = document.getElementById("new_comments");
 
@@ -272,7 +275,11 @@ $half_intro = $count_words / 2;
                                     wrapperDiv.appendChild(time);
                                     wrapperDiv.appendChild(p);
                                   commentsDiv.parentNode.insertBefore(commentDiv, commentsDiv.nextSibling);
+                                  
+                                  const submitButton = document.querySelector("#sub-com");
+                                  submitButton.disabled = true;
 
+                                }
 
 
 

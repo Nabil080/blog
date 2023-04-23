@@ -18,7 +18,15 @@ function blogArticle(){
 }
 
 function Comment(){
-    echo json_encode($_POST);
+
+    $comment = new Comment;
+    $commentRepo = new CommentRepository;
+    if($comment->createToInsert($_POST)){
+        $commentRepo->insertComment ($comment);
+    }else{
+        // traitement messade d'erreur dans la fonction insertComment
+    }
+        
 }
 
 ?>

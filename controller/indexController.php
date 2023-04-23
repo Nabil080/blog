@@ -5,7 +5,7 @@ require_once('model/Section.php');
 require_once('model/Category.php');
 require_once('model/Tag.php');
 require_once('model/Comment.php');
-require_once('model/Reply.php');
+    require_once('model/Reply.php');
 require_once('model/User.php');
 function login(){
     require ('view/login.php') ;

@@ -12,7 +12,13 @@ class Comment{
     
     public function createToInsert(array $categoryForm):bool{
 
-        $this->message = $categoryForm['message'];
+        if(securizeComment($categoryForm['comment']) == false){
+
+            return false;
+        }else{
+            $this->message = securizeComment($categoryForm['comment']);
+        }
+
         $this->article = $categoryForm['article'];
         $this->user = $categoryForm['user'];
 
@@ -26,8 +32,24 @@ class CommentRepository extends ConnectBdd{
         parent::__construct();
     }
 
+    public function insertComment(Comment $comment){
+        $req = $this->bdd->prepare("INSERT INTO comment
+            (comment_message, user_id, article_id) VALUES (?,?,?)");
+        $req->execute(
+            [$comment->message,$comment->user,$comment->article]);
+
+        $response = array(
+            "status" => "success",
+            "message" => "Le commentaire a bien été posté",
+            "comment" => $comment->message,
+            
+        );
+
+        echo json_encode($response);
+    }
+
     public function getCommentByArticleId($articleId){
-        $req = $this->bdd->prepare("SELECT * FROM comment WHERE article_id = ?");
+        $req = $this->bdd->prepare("SELECT * FROM comment WHERE article_id = ? ORDER BY article_id DESC");
         $req->execute([$articleId]);
         $comment_data = $req->fetchAll(PDO::FETCH_ASSOC);
 
