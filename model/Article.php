@@ -17,10 +17,34 @@ class Article{
 
     public function createToInsert(array $articleForm):bool{
 
-        $this->name = $articleForm['name'];
-        $this->intro = $articleForm['intro'];
-        $this->quote = $articleForm['quote'];
-        $this->image = $articleForm['image'];
+
+        if(securizeString($articleForm['name']) == false){
+
+            return false;
+        }else{
+            $this->name = securizeString($articleForm['name']);
+        }
+
+        if(securizeString($articleForm['intro']) == false){
+
+            return false;
+        }else{
+            $this->intro = securizeString($articleForm['intro']);
+        }
+
+        $this->image = securizeImage($_FILES['image']);
+        if($this->image == false){
+        //    message d'erreurs dans securizeImage
+
+            return false;
+        }
+        
+        if(securizeString($articleForm['quote']) == false){
+            $this->quote = securizeString($articleForm['quote']);
+            
+        }
+        
+        
         $this->category = $articleForm['category'];
         $this->user = $_SESSION['user']['id'] ;
         $this->tag = isset($articleForm['tag']) ?  $articleForm['tag'] : null;
