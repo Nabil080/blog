@@ -24,9 +24,10 @@ $articles = $articleRepo->getUserArticles($_SESSION['user']['id']);
                 alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
               <h5><?=$user->name?></h5>
               <p><?=$role?></p>
-              <i class="far fa-edit mb-5"></i>
+              <i style="cursor:pointer" class="far fa-edit mb-5" onclick="switchToForm()"></i>
             </div>
             <div class="col-md-8">
+            <form id="modifyForm">
               <div class="card-body p-4">
                 <h6>Information</h6>
                 <hr class="mt-0 mb-4">
@@ -34,10 +35,12 @@ $articles = $articleRepo->getUserArticles($_SESSION['user']['id']);
                   <div class="col-6 mb-3">
                     <h6>Email</h6>
                     <p class="text-muted"><?=$user->mail?></p>
+                    <input style="display:none" type="email" name="email" value="<?=$user->mail?>">
                   </div>
                   <div class="col-6 mb-3">
                     <h6>Pseudo</h6>
                     <p class="text-muted"><?=$user->name?></p>
+                    <input style="display:none" type="text" name="pseudo" value="<?=$user->name?>">
                   </div>
                 </div>
                 <h6>Informations rédacteur</h6>
@@ -45,6 +48,8 @@ $articles = $articleRepo->getUserArticles($_SESSION['user']['id']);
                 <div class="">
                     <h6>Description</h6>
                     <p class="text-muted"><?=$user->description?></p>
+                    <input style="display:none" type="text" name="description" value="<?=$user->description?>">
+                    <button style="display:none" type="submit" name="submit">Modifier</button>
                 </div>
                 <div class="">
                     <h6>Articles postés</h6>
@@ -66,6 +71,7 @@ $articles = $articleRepo->getUserArticles($_SESSION['user']['id']);
                   <a href="#!"><i class="fab fa-instagram fa-lg"></i></a>
                 </div> -->
               </div>
+            </form>
             </div>
           </div>
         </div>
@@ -73,6 +79,39 @@ $articles = $articleRepo->getUserArticles($_SESSION['user']['id']);
     </div>
   </div>
 </section>
+
+<script>
+
+function switchToForm(){
+    const myForm = document.querySelector("#modifyForm");
+    const formText = myForm.querySelectorAll("p");
+    const formInputs = myForm.querySelectorAll("input");
+    const formButton = myForm.querySelector("button");
+
+    for (let i = 0; i < formText.length; i++) {
+        if (formText[i].style.display === "none") {
+        formText[i].style.display = "block";
+        } else {
+        formText[i].style.display = "none";
+        }
+    }
+
+    for (let i = 0; i < formInputs.length; i++) {
+        if (formInputs[i].style.display === "none") {
+        formInputs[i].style.display = "block";
+        } else {
+        formInputs[i].style.display = "none";
+        }
+    }
+
+    if(formButton.style.display === "none"){
+        formButton.style.display = "block";
+    }else{
+        formButton.style.display = "none";
+    }
+
+}
+</script>
 
 
 <?php include('include/footer.html');?>
