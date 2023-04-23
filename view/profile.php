@@ -42,6 +42,15 @@ $articles = $articleRepo->getUserArticles($_SESSION['user']['id']);
                     <p id="user-name" class="text-muted"><?=$user->name?></p>
                     <input style="display:none" type="text" name="name" value="<?=$user->name?>">
                   </div>
+
+
+<div class="col-6 mb-3">
+                    <h6>Mot de passe</h6>
+                    <p id="user-password" class="text-muted">******></p>
+                    <input style="display:none" type="password" name="password" value="">
+                  </div>
+
+
                 </div>
                 <h6>Informations rédacteur</h6>
                 <hr class="mt-0 mb-4">
