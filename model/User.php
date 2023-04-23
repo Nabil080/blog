@@ -49,6 +49,17 @@ class User{
     public function createToModify(array $userPost):bool{
 
 
+      if(isset($userPost['password']){
+ 
+       if(securizePassword($userPost['password'],$userPost['confirm_password']){
+
+$this->password = securizePassword($userPost['password'],$userPost['password']);
+}else{
+
+return false;
+}
+     }
+
         if(isset($userPost['name'])){    
             if(securizeString($userPost['name']) != false){
                 $this->name = securizeString($userPost['name']);
