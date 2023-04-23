@@ -48,8 +48,8 @@ $articles = $articleRepo->getUserArticles($_SESSION['user']['id']);
                     <h6>Mot de passe</h6>
                     <p id="user-password" class="text-muted">******></p>
                     <input style="display:none" type="password" name="password" value="">
+                    <input style="display:none" type="password" name="password-confitm" value="">
                   </div>
-
 
                 </div>
                 <h6>Informations rédacteur</h6>
