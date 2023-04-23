@@ -41,7 +41,20 @@ function profileTreatment(){
     }else{
         // message d'erreur dans createToModify
     }
+}
+
+function userImageTreatment(){
+    $user = new User;
+    $userRepo = new UserRepository;
+    $user = $userRepo->getUserByID($_SESSION['user']['id']);
     
+        $user->image = securizeImage($_FILES['image']);
+        if($user->image != false){
+            $userRepo->updateUser($user);
+        }else{
+            // message d'erreurs dans securizeImage
+        }
+
 }
 
 ?>

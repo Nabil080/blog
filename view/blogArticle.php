@@ -6,13 +6,7 @@
 $articleId = isset($_GET['article']) ? intval($_GET['article']) : 1;
 $articleRepo = new ArticleRepository;
 $article = $articleRepo->getArticle($articleId);
-// var_dump($article);
 
-// $count_intro = str_word_count($article->intro);
-// var_dump($count_intro);
-// $split_intro = str_split($article->intro,$count_intro / 2);
-// var_dump($split_intro);
-// TODO: REFLEXIVITE SPLIT
 $words = explode(" ",$article->intro);
 $count_words = count($words);
 $half_intro = $count_words / 2;
@@ -53,7 +47,7 @@ $half_intro = $count_words / 2;
             <article class="blog-details">
 
               <div class="post-img">
-                <img src="assets/img/blog/<?=$article->image?>" alt="" class="img-fluid">
+                <img src="upload/<?=$article->image?>" alt="" class="img-fluid">
               </div>
 
               <h2 class="title"><?=$article->name?></h2>
@@ -90,7 +84,7 @@ $half_intro = $count_words / 2;
                     <?=$section->body?>
                   </p>
                     <?php if(isset($section->image)){ ?>
-                    <img src="assets/img/blog/<?=$section->image?>" class="img-fluid" alt="">
+                    <img src="upload/<?=$section->image?>" class="img-fluid" alt="">
                   <?php }
                 }
                 } ?>
@@ -116,7 +110,7 @@ $half_intro = $count_words / 2;
             </article><!-- End blog post -->
 
             <div class="post-author d-flex align-items-center">
-              <img src="assets/img/blog/<?=$article->user->image?>" class="rounded-circle flex-shrink-0" alt="">
+              <img src="upload/<?=$article->user->image?>" class="rounded-circle flex-shrink-0" alt="">
               <div>
                 <h4><?=$article->user->name?></h4>
                 <div class="social-links">
@@ -138,7 +132,7 @@ $half_intro = $count_words / 2;
               <?php foreach($article->comment as $comment){ ?>
                 <div id="comment-<?=$comment->id?>" class="comment">
                   <div class="d-flex">
-                    <div class="comment-img"><img src="assets/img/blog/<?=$comment->user->image?>" alt=""></div>
+                    <div class="comment-img"><img src="upload/<?=$comment->user->image?>" alt=""></div>
                     <div>
                       <h5><a href=""><?=$comment->user->name?></a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
                       <time datetime="2020-01-01"><?=formatDate($comment->date)?></time>
@@ -151,7 +145,7 @@ $half_intro = $count_words / 2;
                   <?php foreach($comment->reply as $reply){?>
                   <div id="comment-reply-<?=$reply->id?>" class="comment comment-reply">
                   <div class="d-flex">
-                    <div class="comment-img"><img src="assets/img/blog/<?=$reply->user->image?>" alt=""></div>
+                    <div class="comment-img"><img src="upload/<?=$reply->user->image?>" alt=""></div>
                     <div>
                       <h5><a href=""><?=$reply->user->name?></a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
                       <time datetime="2020-01-01"><?=formatDate($reply->date)?></time>
@@ -223,7 +217,7 @@ $half_intro = $count_words / 2;
                                   const commentImgDiv = document.createElement("div");
                                   commentImgDiv.className = "comment-img";
                                   const img = document.createElement("img");
-                                  img.src = "https://www.civictheatre.ie/wp-content/uploads/2016/05/blank-profile-picture-973460_960_720.png";
+                                  img.src = data.image;
                                   img.alt = "";
                                   commentImgDiv.appendChild(img);
 
@@ -231,7 +225,7 @@ $half_intro = $count_words / 2;
                                   const h5 = document.createElement("h5");
                                   const a1 = document.createElement("a");
                                   a1.href = "";
-                                  a1.textContent = "Name";
+                                  a1.textContent = data.name;
                                   const a2 = document.createElement("a");
                                   a2.href = "#";
                                   a2.className = "reply";
@@ -249,8 +243,8 @@ $half_intro = $count_words / 2;
 
                                   // Create the time element
                                   const time = document.createElement("time");
-                                  time.dateTime = "2020-01-01";
-                                  time.textContent = new Date().toLocaleDateString('en-US', {day: 'numeric', month: 'short', year: 'numeric'});
+                                  time.dateTime = data.date;
+                                  time.textContent = data.date;
 
                                   // Create the p element and set its text content
                                   const p = document.createElement("p");
@@ -331,9 +325,9 @@ $half_intro = $count_words / 2;
                     <?php  $articles = $articleRepo->getArticles(5); 
                     foreach($articles as $article){?>
                   <div class="post-item">
-                    <img src="assets/img/blog/<?=$article->image?>" alt="">
+                    <img src="upload/<?=$article->image?>" alt="">
                     <div>
-                      <h4><a href="blog-details.html"><?=$article->name?></a></h4>
+                      <h4><a href="?action=blog_article&article=<?=$article->id?>"><?=$article->name?></a></h4>
                       <time datetime="2020-01-01"><?=formatDate($article->date)?></time>
                     </div>
                   </div>

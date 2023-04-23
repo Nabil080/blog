@@ -84,6 +84,96 @@ function securizePassword(string $password, string $confirm_password)
 
 }
 
+function securizeImage(array $filesImage){
+
+    if(!empty($filesImage))
+        {
+        $path = 'upload/';
+        $nameFile = $filesImage['name'];
+        $typeFile = $filesImage['type'];
+        $tmpFile = $filesImage['tmp_name'];
+        $errorFile = $filesImage['error'];
+        $sizeFile = $filesImage['size'];
+
+        $extensions = ['png', 'jpg', 'jpeg', 'gif', 'jiff'];
+        $type = ['image/png', 'image/jpg', 'image/jpeg', 'image/gif', 'image/jiff'];
+
+        $extension = explode('.', $nameFile);
+
+        $max_size =500000;
+
+        if(in_array($typeFile, $type))
+        {
+            if(count($extension) <=2 && in_array(strtolower(end($extension)), $extensions))
+            {
+                if($sizeFile <= $max_size && $errorFile == 0)
+                {
+                    if(move_uploaded_file($tmpFile, $path.$image = uniqid() . '.' . end($extension)) )
+                    {
+                        $response = array(
+                            "status" => "",
+                            "message" => "L'image a bien été upload'"
+                        );
+                        echo json_encode($response);
+
+                        return $image;
+                    }
+                    else
+                    {
+                        $response = array(
+                            "status" => "failure",
+                            "message" => "Echec de l'upload de l'image"
+                        );
+                        echo json_encode($response);
+
+                        return false;
+                    }
+                }
+                else
+                {
+                    $response = array(
+                        "status" => "failure",
+                        "message" => "Le poids de l'image est trop élevé"
+                    );
+                    echo json_encode($response);
+
+                    return false;
+                }
+            }
+            else
+            {
+                $response = array(
+                    "status" => "failure",
+                    "message" => "Merci d'upload une image !"
+                );
+                echo json_encode($response);
+
+                return false;
+            }
+        }
+        else
+        {
+            $response = array(
+                "status" => "failure",
+                "message" => "Type non autorisé !"
+            );
+            echo json_encode($response);
+
+            return false;
+        }
+    }else{
+
+        $response = array(
+            "status" => "failure",
+            "message" => "Le fichier est vide !"
+        );
+        echo json_encode($response);
+
+        return false;
+    }
+        
+}
+
 function formatDate($date){
     $DateTime = new DateTime($date);
     $formatted_date = $DateTime->format('d M, Y');
