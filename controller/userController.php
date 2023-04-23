@@ -5,6 +5,10 @@ function logout(){
     login();
 }
 
+function profile(){
+    require ('view/profile.php') ;
+}
+
 function homepage(){
     require ('view/homepage.php') ;
 }
@@ -26,7 +30,18 @@ function Comment(){
     }else{
         // traitement messade d'erreur dans la fonction insertComment
     }
-        
+}
+
+function profileTreatment(){
+    $user = new User;
+    $userRepo = new UserRepository;
+
+    if($user->createToModify($_POST)){
+        $userRepo->updateUser($user);
+    }else{
+        // message d'erreur dans createToModify
+    }
+    
 }
 
 ?>

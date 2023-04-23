@@ -328,7 +328,7 @@ $half_intro = $count_words / 2;
                 <h3 class="sidebar-title">Recent Posts</h3>
 
                 <div class="mt-3">
-                    <?php  $articles = $articleRepo->getLatestArticles(5); 
+                    <?php  $articles = $articleRepo->getArticles(5); 
                     foreach($articles as $article){?>
                   <div class="post-item">
                     <img src="assets/img/blog/<?=$article->image?>" alt="">

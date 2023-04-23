@@ -65,7 +65,7 @@
 <srcipt src="assets/js/main.js"></srcipt>
 <script>
 
-const signUpForm = document.querySelector("#register-form")
+const signUpForm = document.querySelector("#register-form");
 signUpForm.addEventListener('submit',function(event){
     event.preventDefault();
 
