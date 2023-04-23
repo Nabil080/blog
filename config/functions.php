@@ -83,6 +83,13 @@ function securizePassword(string $password, string $confirm_password)
 }
 
 
+function formatDate($date){
+    $DateTime = new DateTime($date);
+    $formatted_date = $DateTime->format('d M, Y');
+
+    return $formatted_date;
+}
+
 
 // function contactAjax(){
 //     /**

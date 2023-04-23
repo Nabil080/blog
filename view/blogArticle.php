@@ -5,7 +5,7 @@
 <?php 
 $articleRepo = new ArticleRepository;
 $article = $articleRepo->getArticle(2);
-var_dump($article);
+// var_dump($article);
 
 // $count_intro = str_word_count($article->intro);
 // var_dump($count_intro);
@@ -60,7 +60,7 @@ $half_intro = $count_words / 2;
               <div class="meta-top">
                 <ul>
                   <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="blog-details.html"><?=$article->user->name?></a></li>
-                  <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a href="blog-details.html"><time datetime="2020-01-01"><?php $date = new DateTime($article->date); echo $date->format('d M, Y')?></time></a></li>
+                  <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a href="blog-details.html"><time datetime="2020-01-01"><?formatDate($article->date)?></time></a></li>
                   <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="blog-details.html"><?=count($article->comment)?> comments</a></li>
                 </ul>
               </div><!-- End meta top -->
@@ -144,7 +144,7 @@ $half_intro = $count_words / 2;
                     <?php } ?>
                     <div>
                       <h5><a href=""><?=$comment->user->name?></a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
-                      <time datetime="2020-01-01"><?php $date = new DateTime($comment->date); echo $date->format('d M, Y');?></time>
+                      <time datetime="2020-01-01"><?=formatDate($comment->date)?></time>
                       <p>
                         <?=$comment->message?>
                       </p>
@@ -161,15 +161,16 @@ $half_intro = $count_words / 2;
                     <?php } ?>
                     <div>
                       <h5><a href=""><?=$reply->user->name?></a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
-                      <time datetime="2020-01-01"><?php $date = new DateTime($reply->date); echo $date->format('d M, Y');?></time>
+                      <time datetime="2020-01-01"><?=formatDate($reply->date)?></time>
                       <p>
                       <?=$reply->message?>
                         </p>
                     </div>
                   </div>
-                    <?php } ?>
-                </div><!-- End comment #1 -->
-              <?php } ?>
+                  </div><!-- End comment #1 -->
+                  <?php } ?>
+                </div>
+                <?php } ?>
 
 
               <div class="reply-form">
@@ -179,15 +180,10 @@ $half_intro = $count_words / 2;
                 <form action="">
                   <div class="row">
                     <div class="col-md-6 form-group">
-                      <input name="name" type="text" class="form-control" placeholder="Your Name*">
+                      <input name="name" type="text" class="form-control" disabled value="<?=$_SESSION['user']['name']?>"  placeholder="Your Name*">
                     </div>
                     <div class="col-md-6 form-group">
-                      <input name="email" type="text" class="form-control" placeholder="Your Email*">
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col form-group">
-                      <input name="website" type="text" class="form-control" placeholder="Your Website">
+                      <input name="email" type="text" class="form-control" disabled value="<?=$_SESSION['user']['mail']?>" placeholder="Your Email*">
                     </div>
                   </div>
                   <div class="row">
@@ -220,12 +216,12 @@ $half_intro = $count_words / 2;
               <div class="sidebar-item categories">
                 <h3 class="sidebar-title">Categories</h3>
                 <ul class="mt-3">
-                  <li><a href="#">General <span>(25)</span></a></li>
-                  <li><a href="#">Lifestyle <span>(12)</span></a></li>
-                  <li><a href="#">Travel <span>(5)</span></a></li>
-                  <li><a href="#">Design <span>(22)</span></a></li>
-                  <li><a href="#">Creative <span>(8)</span></a></li>
-                  <li><a href="#">Educaion <span>(14)</span></a></li>
+                  <?php 
+                    $categoriesRepo = new CategoryRepository;
+                    $categories = $categoriesRepo->getAllCategories(); 
+                    foreach($categories as $category){ $count = $categoriesRepo->countCategoryArticle($category);?>
+                  <li><a href="#"><?=$category->name?> <span><?=$count?></span></a></li>
+                  <?php } ?>
                 </ul>
               </div><!-- End sidebar categories-->
 
@@ -233,46 +229,16 @@ $half_intro = $count_words / 2;
                 <h3 class="sidebar-title">Recent Posts</h3>
 
                 <div class="mt-3">
-
-                  <div class="post-item mt-3">
-                    <img src="assets/img/blog/blog-recent-1.jpg" alt="">
-                    <div>
-                      <h4><a href="blog-details.html">Nihil blanditiis at in nihil autem</a></h4>
-                      <time datetime="2020-01-01">Jan 1, 2020</time>
-                    </div>
-                  </div><!-- End recent post item-->
-
+                    <?php  $articles = $articleRepo->getLatestArticles(5); 
+                    foreach($articles as $article){?>
                   <div class="post-item">
-                    <img src="assets/img/blog/blog-recent-2.jpg" alt="">
+                    <img src="assets/img/blog/<?=$article->image?>" alt="">
                     <div>
-                      <h4><a href="blog-details.html">Quidem autem et impedit</a></h4>
-                      <time datetime="2020-01-01">Jan 1, 2020</time>
+                      <h4><a href="blog-details.html"><?=$article->name?></a></h4>
+                      <time datetime="2020-01-01"><?=formatDate($article->date)?></time>
                     </div>
-                  </div><!-- End recent post item-->
-
-                  <div class="post-item">
-                    <img src="assets/img/blog/blog-recent-3.jpg" alt="">
-                    <div>
-                      <h4><a href="blog-details.html">Id quia et et ut maxime similique occaecati ut</a></h4>
-                      <time datetime="2020-01-01">Jan 1, 2020</time>
-                    </div>
-                  </div><!-- End recent post item-->
-
-                  <div class="post-item">
-                    <img src="assets/img/blog/blog-recent-4.jpg" alt="">
-                    <div>
-                      <h4><a href="blog-details.html">Laborum corporis quo dara net para</a></h4>
-                      <time datetime="2020-01-01">Jan 1, 2020</time>
-                    </div>
-                  </div><!-- End recent post item-->
-
-                  <div class="post-item">
-                    <img src="assets/img/blog/blog-recent-5.jpg" alt="">
-                    <div>
-                      <h4><a href="blog-details.html">Et dolores corrupti quae illo quod dolor</a></h4>
-                      <time datetime="2020-01-01">Jan 1, 2020</time>
-                    </div>
-                  </div><!-- End recent post item-->
+                  </div>
+                  <?php } ?>
 
                 </div>
 
@@ -280,18 +246,16 @@ $half_intro = $count_words / 2;
 
               <div class="sidebar-item tags">
                 <h3 class="sidebar-title">Tags</h3>
+                
                 <ul class="mt-3">
-                  <li><a href="#">App</a></li>
-                  <li><a href="#">IT</a></li>
-                  <li><a href="#">Business</a></li>
-                  <li><a href="#">Mac</a></li>
-                  <li><a href="#">Design</a></li>
-                  <li><a href="#">Office</a></li>
-                  <li><a href="#">Creative</a></li>
-                  <li><a href="#">Studio</a></li>
-                  <li><a href="#">Smart</a></li>
-                  <li><a href="#">Tips</a></li>
-                  <li><a href="#">Marketing</a></li>
+                <?php 
+                  $tagsRepo = new TagRepository;
+                  $tags = $tagsRepo->getAllTags(); 
+                  foreach($tags as $tag){?>
+                  <li>
+                    <a href="#"><?=$tag->name?></a>
+                  </li>
+                  <?php } ?>
                 </ul>
               </div><!-- End sidebar tags-->
 

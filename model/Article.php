@@ -156,8 +156,6 @@ class ArticleRepository extends ConnectBdd{
             $article->image = $key['article_image'];
             $article->category = $key['category_id'];
             $article->user = $key['user_id'];
-            $article->tag[] = 1;
-
 
             $req = $this->bdd->prepare("SELECT * FROM section");
             $req->execute([]);
@@ -191,6 +189,28 @@ class ArticleRepository extends ConnectBdd{
 
 
             $articles[]= $article;
+        }
+
+        return $articles;
+    }
+
+    public function getLatestArticles($limit){
+        $req = $this->bdd->prepare("SELECT * FROM article ORDER BY article_id DESC LIMIT $limit");
+        $req->execute();
+        $data = $req->fetchAll(PDO::FETCH_ASSOC);
+        $articles = [];
+        foreach($data as $key){
+            $article = new Article;
+            $article->id = $key['article_id'];
+            $article->name = $key['article_name'];
+            $article->date = $key['article_date'];
+            $article->intro = $key['article_intro'];
+            $article->quote = $key['article_quote'];
+            $article->image = $key['article_image'];
+            $article->category = $key['category_id'];
+            $article->user = $key['user_id'];
+
+            $articles[] = $article;
         }
 
         return $articles;
