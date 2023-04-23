@@ -39,6 +39,7 @@ class User{
         $this->token = getRandomToken();
         $this->active = false;
         $this->role = 0;
+        $this->image = "base_profil.png";
 
 
         return true;
