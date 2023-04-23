@@ -6,6 +6,10 @@
 $userId = $_SESSION['user']['id'];
 $userRepo = new UserRepository;
 $user = $userRepo->getUserById($userId);
+$role = $user->role != 1 ? "Utilisateur" : "Administrateur";
+
+$articleRepo = new ArticleRepository; 
+$articles = $articleRepo->getUserArticles($_SESSION['user']['id']); 
 ?>
 
 <section class="vh-100" style="background-color: #f4f5f7;">
@@ -19,7 +23,7 @@ $user = $userRepo->getUserById($userId);
               <img src="assets/img/blog/base_profile.png"
                 alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
               <h5><?=$user->name?></h5>
-              <p>Utilisateur</p>
+              <p><?=$role?></p>
               <i class="far fa-edit mb-5"></i>
             </div>
             <div class="col-md-8">
@@ -29,24 +33,23 @@ $user = $userRepo->getUserById($userId);
                 <div class="row pt-1">
                   <div class="col-6 mb-3">
                     <h6>Email</h6>
-                    <p class="text-muted">bellilnabil@gmail.com</p>
+                    <p class="text-muted"><?=$user->mail?></p>
                   </div>
                   <div class="col-6 mb-3">
                     <h6>Pseudo</h6>
-                    <p class="text-muted">Nabil</p>
+                    <p class="text-muted"><?=$user->name?></p>
                   </div>
                 </div>
-                <h6>Administrateur</h6>
+                <h6>Informations rédacteur</h6>
                 <hr class="mt-0 mb-4">
                 <div class="">
                     <h6>Description</h6>
-                    <p class="text-muted">Je suis un jeune entrepreneur qui souhaite écrire un maximum d'articles ! </p>
+                    <p class="text-muted"><?=$user->description?></p>
                 </div>
                 <div class="">
                     <h6>Articles postés</h6>
                     <div class="mt-3">
-                    <?php  $articleRepo = new ArticleRepository; $articles = $articleRepo->getArticles(5); 
-                    foreach($articles as $article){?>
+                    <?php foreach($articles as $article){?>
                   <div class="post-item">
                     <img src="assets/img/blog/<?=$article->image?>" alt="" width="50px">
                     <div>

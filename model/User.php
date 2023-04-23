@@ -11,6 +11,7 @@ class User{
     public $token;
     public $active;
     public $role;
+    public $description;
 
 
     public function createToInsert(array $userPost):bool{
@@ -127,6 +128,7 @@ class UserRepository extends ConnectBdd{
             $user->token = $data['user_token'];
             $user->active = $data['user_active'];
             $user->role = $data['role_id'];
+            $user->description = $data['user_description'];
 
             return $user;
         }else{

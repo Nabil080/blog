@@ -113,6 +113,24 @@ class ArticleRepository extends ConnectBdd{
         return $articles;
     }
 
+    public function getUserArticles($userId){
+
+        $req = $this->bdd->prepare("SELECT * FROM article WHERE user_id = ? ORDER BY article_id");
+        $req->execute([$userId]);
+        $data = $req->fetchAll(PDO::FETCH_ASSOC);
+        $articles = [];
+        foreach($data as $key){
+            $article = new Article;
+            $articleRepo = new ArticleRepository;
+            $article = $articleRepo->getArticle($key['article_id']);
+
+            $articles[]= $article;
+        }
+
+        
+        return $articles;
+    }
+
 }
 
 
