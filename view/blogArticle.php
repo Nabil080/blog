@@ -60,7 +60,7 @@ $half_intro = $count_words / 2;
               <div class="meta-top">
                 <ul>
                   <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="blog-details.html"><?=$article->user->name?></a></li>
-                  <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a href="blog-details.html"><time datetime="2020-01-01"><?formatDate($article->date)?></time></a></li>
+                  <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a href="blog-details.html"><time datetime="2020-01-01"><?=formatDate($article->date)?></time></a></li>
                   <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="blog-details.html"><?=count($article->comment)?> comments</a></li>
                 </ul>
               </div><!-- End meta top -->
@@ -69,12 +69,14 @@ $half_intro = $count_words / 2;
                 <p>
                 <?php for($i=0;$i<$half_intro;$i++){echo $words[$i]." ";}?>
                 </p>
-
+                
+                <?php if(isset($article->quote)){ ?>
                 <blockquote>
                   <p>
                   <?=$article->quote?>
                   </p>
                 </blockquote>
+                <?php } ?>
 
                 <p>
                 <?php for($i=$half_intro;$i<$count_words;$i++){echo $words[$i]." ";} ?>
@@ -135,7 +137,7 @@ $half_intro = $count_words / 2;
 
               <h4 class="comments-count"><?=count($article->comment)?> comments</h4>
               <?php foreach($article->comment as $comment){ ?>
-                <div id="comment-1" class="comment">
+                <div id="comment-<?=$comment->id?>" class="comment">
                   <div class="d-flex">
                     <?php if(isset($comment->user->image)){ ?>
                     <div class="comment-img"><img src="assets/img/blog/<?=$comment->user->image?>" alt=""></div>
@@ -152,7 +154,7 @@ $half_intro = $count_words / 2;
                   </div>
                       
                   <?php foreach($comment->reply as $reply){?>
-                  <div id="comment-reply-1" class="comment comment-reply">
+                  <div id="comment-reply-<?=$reply->id?>" class="comment comment-reply">
                   <div class="d-flex">
                   <?php if(isset($reply->user->image)){ ?>
                     <div class="comment-img"><img src="assets/img/blog/<?=$reply->user->image?>" alt=""></div>

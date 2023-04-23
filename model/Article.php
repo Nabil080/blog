@@ -49,93 +49,46 @@ class ArticleRepository extends ConnectBdd{
     }
 
     public function getArticle($articleId){
+        
+        $article = new Article;
         $req = $this->bdd->prepare("SELECT * FROM article WHERE article_id = ?");
         $req->execute([$articleId]);
         $article_data = $req->fetch();
-        $article = new Article;
+        
         $article->id = $article_data['article_id'];
         $article->name = $article_data['article_name'];
         $article->date = $article_data['article_date'];
         $article->intro = $article_data['article_intro'];
         $article->quote = $article_data['article_quote'];
         $article->image = $article_data['article_image'];
-        // $article->category = $data['category_id'];
-        // $article->tag[] = 1;
 
-        $req = $this->bdd->prepare("SELECT * FROM user WHERE user_id = ?");
-        $req->execute([$article_data['user_id']]);
-        $user_data = $req->fetch();
-        $user = new User;
-
-        $user->id = $user_data['user_id'];
-        $user->name = $user_data['user_name'];
-        $user->image = $user_data['user_image'];
-
+        $user = new User ();
+        $userRepo = new UserRepository;
+        $user = $userRepo->getUserByID($article_data['user_id']);
         $article->user = $user;
 
-        $req = $this->bdd->prepare("SELECT * FROM category WHERE category_id = ?");
-        $req->execute([$article_data['category_id']]);
-        $category_data = $req->fetch();
-        $category = new Category;
 
-        $category->id = $category_data['category_id'];
-        $category->name = $category_data['category_name'];
-
+        $category = new Category();
+        $categoryRepo = new CategoryRepository;
+        $category = $categoryRepo->getCategoryById($article_data['category_id']);
         $article->category = $category;
 
-        $req = $this->bdd->prepare("SELECT * FROM section WHERE article_id = ?");
-        $req->execute([$articleId]);
-        $section_data = $req->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($section_data as $key){
-            $section = new Section;
-            $section->id = $key['section_id'];
-            $section->title = $key['section_title'];
-            $section->body = $key['section_body'];
-            $section->image = $key['section_image'];
-            $section->article = $key['article_id'];
-
-            $article->section[] = $section;
-        }
-
-        $req = $this->bdd->prepare("SELECT * FROM comment WHERE article_id = ?");
-        $req->execute([$articleId]);
-        $comment_data = $req->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($comment_data as $key){
-            $comment = new Comment;
-            $comment->id = $key['comment_id'];
-            $comment->date = $key['comment_date'];
-            $comment->message = $key['comment_message'];
-            $comment->article = $key['article_id'];
-
-            $user = new User ();
-            $userRepo = new UserRepository;
-            $user = $userRepo->getUserByID($key['user_id']);
-            $comment->user = $user;
-
-            $reply = new Reply ();
-            $replyRepo = new ReplyRepository;
-            $reply = $replyRepo->getRepliesByCommentId($comment->id);
-            $comment->reply = $reply;
+        $section = new Section();
+        $sectionRepo = new SectionRepository;
+        $section = $sectionRepo->getSectionByArticleId($articleId);
+        $article->section = $section;
 
 
-            $article->comment[] = $comment;
-        }
+        $comment = new Comment();
+        $commentRepo = new CommentRepository;
+        $comment = $commentRepo->getCommentByArticleId($articleId);
+        $article->comment = $comment;
 
         
-        $req = $this->bdd->prepare("SELECT tag_id FROM article_tag WHERE article_id = ?");
-        $req->execute([$articleId]);
-        $article_tags = $req->fetchAll(PDO::FETCH_ASSOC);
-        foreach($article_tags as $article_tag){
-            $req = $this->bdd->prepare("SELECT * FROM tag WHERE tag_id = ?");
-            $req->execute([$article_tag['tag_id']]);
-            $tag_data = $req->fetch();
-            $tag = new Tag;
-
-            $tag->id = $tag_data['tag_id'];
-            $tag->name = $tag_data['tag_name'];
-            
-            $article->tag[] = $tag;
-        }
+        $tag = new Tag();
+        $tagRepo = new TagRepository;
+        $tag = $tagRepo->getTagByArticleId($articleId);
+        $article->tag = $tag;
 
 
         return $article;

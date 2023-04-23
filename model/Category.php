@@ -20,6 +20,18 @@ class CategoryRepository extends ConnectBdd{
         parent::__construct();
     }
 
+    public function getCategoryById($categoryId){
+        $req = $this->bdd->prepare("SELECT * FROM category WHERE category_id = ?");
+        $req->execute([$categoryId]);
+        $category_data = $req->fetch();
+        $category = new Category;
+
+        $category->id = $category_data['category_id'];
+        $category->name = $category_data['category_name'];
+
+        return $category;
+    }
+
     public function getAllCategories(){
         $req = $this->bdd->prepare("SELECT * FROM category");
         $req->execute();
