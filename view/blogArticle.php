@@ -6,13 +6,7 @@
 $articleId = isset($_GET['article']) ? intval($_GET['article']) : 1;
 $articleRepo = new ArticleRepository;
 $article = $articleRepo->getArticle($articleId);
-// var_dump($article);
 
-// $count_intro = str_word_count($article->intro);
-// var_dump($count_intro);
-// $split_intro = str_split($article->intro,$count_intro / 2);
-// var_dump($split_intro);
-// TODO: REFLEXIVITE SPLIT
 $words = explode(" ",$article->intro);
 $count_words = count($words);
 $half_intro = $count_words / 2;
