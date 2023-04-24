@@ -25,11 +25,15 @@ class Section{
             $this->body = securizeString($sectionForm['section_text']);
         }
 
-        $this->image = securizeImage($_FILES['section_image']);
-        if($this->image == false){
-        //    message d'erreurs dans securizeImage
+        if(securizeImage($_FILES['section_image']) != false){
+            $this->image = securizeImage($_FILES['section_image']);
+            if($this->image == false){
+            //    message d'erreurs dans securizeImage
 
-            return false;
+                return false;
+            }
+        }else{
+            $this->image = "";
         }
 
         $this->article = $sectionForm['article_id'];

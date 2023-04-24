@@ -130,7 +130,14 @@ $half_intro = $count_words / 2;
 
 
               <?php foreach($article->comment as $comment){ ?>
-                <div id="comment_<?=$comment->id?>" class="comment">
+                <div id="message_<?=$comment->id?>" style="color:orange"></div>
+                <div id="comment_<?=$comment->id?>" class="comment relative" style="transition:display 2000ms">
+                <!-- boutons gestion commentaire -->
+                  <div style="position:absolute;top:8px;right:8px;display:flex;">
+                        <div id="update_<?=$comment->id?>" onclick="updateCom(<?=$comment->id?>)" style="padding-inline:8px;cursor:pointer;"><i class="fa-solid fa-pen-to-square"></i></div>
+                        <div id="delete_<?=$comment->id?>" onclick="deleteCom(<?=$comment->id?>)" style="padding-inline:8px;cursor:pointer;"><i class="fa-solid fa-trash"></i></div>
+                        <div id="report_<?=$comment->id?>" onclick="reportCom(<?=$comment->id?>)" style="padding-inline:8px;cursor:pointer;"><i class="fa-solid fa-exclamation"></i></div>
+                  </div>
                   <div class="d-flex">
                     <div class="comment-img"><img src="upload/<?=$comment->user->image?>" alt=""></div>
                     <div>
@@ -201,7 +208,59 @@ $half_intro = $count_words / 2;
                   <button id="sub-com" type="submit" class="btn btn-primary">Post Comment</button>
                 </form>
 
-              <script>
+                <script>
+
+                function deleteCom(commentId){
+                  console.log(commentId);
+
+                  fetch('?action=delete_com',{
+                  method: "POST",
+                  // headers: {'Content-Type': 'application/json'},
+                  body: JSON.stringify({comment: commentId}),
+                })
+                .then(function(response) {
+                  return response.text();
+                })
+                .then(function(data) {
+                  data = JSON.parse(data);
+
+                  if(data.status === 'success'){
+                    const commentDiv = document.getElementById("comment_"+commentId);
+                    commentDiv.style.display = "none";
+                    const messageDiv = document.getElementById("message_"+commentId);
+                    messageDiv.innerText = data.message
+                  }
+                });
+                }
+
+                function updateCom(commentId){
+                  const commentDiv = document.getElementById("comment_"+commentId);
+                  console.log(commentDiv);
+                }
+
+                function reportCom(commentId){
+                console.log(commentId);
+
+                fetch('?action=report_com',{
+                  method: "POST",
+                  // headers: {'Content-Type': 'application/json'},
+                  body: JSON.stringify({comment: commentId}),
+                })
+                .then(function(response) {
+                  return response.text();
+                })
+                .then(function(data) {
+                  data = JSON.parse(data);
+                  console.log(data);g
+                  if(data.status === 'success'){
+                    const messageDiv = document.getElementById("message_"+commentId);
+                    messageDiv.innerText = data.message
+                  }
+                });
+              }
+
+
+
                 function reply(commentId){
                   // console.log(commentId);
                   const replyForm = document.getElementById("replyForm"+commentId);

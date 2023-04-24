@@ -9,7 +9,7 @@ class Comment{
     public $article;
     public $user;
     public $reply;
-    
+
     public function createToInsert(array $categoryForm):bool{
 
         if(securizeComment($categoryForm['comment']) == false){
@@ -50,6 +50,30 @@ class CommentRepository extends ConnectBdd{
             "date" => $date,
             "image" => "upload/".$user->image,
             "name" => $user->name,
+        );
+
+        echo json_encode($response);
+    }
+
+    public function reportComment($commentId){
+        $req = $this->bdd->prepare("UPDATE comment SET comment_reports = comment_reports + 1 WHERE comment_id = ?");
+        $req->execute([$commentId]);
+
+        $response = array(
+            "status" => "success",
+            "message" => "Le commentaire a bien été signalé !",
+        );
+
+        echo json_encode($response);
+    }
+
+    public function deleteComment($commentId){
+        $req = $this->bdd->prepare("DELETE FROM comment WHERE comment_id = ?");
+        $req->execute([$commentId]);
+
+        $response = array(
+            "status" => "success",
+            "message" => "Le commentaire a bien été supprimé !",
         );
 
         echo json_encode($response);

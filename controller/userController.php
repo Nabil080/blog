@@ -41,6 +41,24 @@ function reply(){
     }
 }
 
+function report(){
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
+    
+    $commentRepo = new CommentRepository;
+    $commentRepo->reportComment($data['comment']);
+    
+}
+
+function delete(){
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
+    
+    $commentRepo = new CommentRepository;
+    $commentRepo->deleteComment($data['comment']);
+    
+}
+
 function profileTreatment(){
     $user = new User;
     $userRepo = new UserRepository;
