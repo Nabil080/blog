@@ -101,7 +101,3 @@ signUpForm.addEventListener('submit',function(event){
 </script>
 </body><!-- This templates was made by Colorlib (https://colorlib.com) -->
 </html>
-
-<?php
-unset($_SESSION['error']);
-?>

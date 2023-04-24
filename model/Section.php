@@ -17,7 +17,7 @@ class Section{
         }else{
             $this->title = securizeString($sectionForm['section_title']);
         }
-        
+
         if(securizeString($sectionForm['section_text']) == false){
 
             return false;
@@ -58,7 +58,7 @@ class SectionRepository extends ConnectBdd{
             $section->image = $key['section_image'];
             $section->article = $key['article_id'];
 
-            $sections[] = $section;            
+            $sections[] = $section;
         }
 
         return $sections;

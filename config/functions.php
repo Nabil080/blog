@@ -173,7 +173,6 @@ function securizeImage(array $filesImage){
 
         return false;
     }
-        
 }
 
 function formatDate($date){

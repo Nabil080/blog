@@ -50,7 +50,6 @@ class CommentRepository extends ConnectBdd{
             "date" => $date,
             "image" => "upload/".$user->image,
             "name" => $user->name,
-            
         );
 
         echo json_encode($response);

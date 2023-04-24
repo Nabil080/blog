@@ -133,7 +133,7 @@ class ArticleRepository extends ConnectBdd{
             $articles[]= $article;
         }
 
-        
+
         return $articles;
     }
 
@@ -151,7 +151,7 @@ class ArticleRepository extends ConnectBdd{
             $articles[]= $article;
         }
 
-        
+
         return $articles;
     }
 
