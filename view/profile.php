@@ -25,7 +25,7 @@ $comments = $commentRepo->getUserComments($_SESSION['user']['id']);
           <div class="row g-0">
             <div class="col-md-4 gradient-custom text-center text-white"
               style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
-              <img src="upload/<?=$user->image?>" alt="Avatar" class="img-fluid mt-5" style="width: 80px;"/>
+              <img src="upload/<?=$user->image?>" alt="Avatar" class="img-fluid mt-5" style="width: 80%;"/>
               <form enctype="multipart/form-data" id="imageForm" style="display:none !important" method="post" action="?action=image_php">
                 <input type="file" name="image">
                 <button type="submit" name="submit">Changer</button>

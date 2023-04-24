@@ -71,7 +71,6 @@ function update(){
 function profileTreatment(){
     $user = new User;
     $userRepo = new UserRepository;
-
     if($user->createToModify($_POST)){
         $userRepo->updateUser($user);
     }else{
