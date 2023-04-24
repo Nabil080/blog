@@ -4,7 +4,6 @@ require_once('controller/indexController.php');
 require_once('controller/userController.php');
 require_once('controller/adminController.php');
 
-
 // var_dump($_SESSION);
 // $_SESSION['slt'] = 0;
 

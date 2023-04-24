@@ -146,6 +146,20 @@ $half_intro = $count_words / 2;
                       <textarea name="reply"></textarea>
                       <button type="submit" name="submit">Répondre</button>
                     </form>
+                    <div id="new_reply_<?=$comment->id?>" class="comment comment-reply" style="display:none">
+                      <div class="d-flex">
+                        <div class="comment-img">
+                          <img id="new_image_<?=$comment->id?>" src="" alt="">
+                        </div>
+                        <div>
+                          <h5><a id="new_user_<?=$comment->id?>" href=""><!--pseudo--></a> <a class="reply"><i class="bi bi-reply-fill"></i>Reply</a></h5>
+                          <time id="new_date_<?=$comment->id?>" datetime="2020-01-01"><!--date --></time>
+                          <p id="new_message_<?=$comment->id?>">
+                            <!-- contenu de la réponse -->
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   <?php foreach($comment->reply as $reply){?>
                   <div id="comment_reply_<?=$reply->id?>" class="comment comment-reply">
                   <div class="d-flex">
@@ -196,16 +210,30 @@ $half_intro = $count_words / 2;
 
                   replyForm.addEventListener('submit', function(event){
                     event.preventDefault();
+                    // * TRAITEMENT AJAX ICI BAS
 
                     const formData = new FormData(replyForm);
-                    console.log(formData);
                     fetch('index.php?action=reply_php',{
-                    method: "POST",
-                    data: formData
+                        method: "POST",
+                        body: formData
                     })
                     .then(response => response.json())
                     .then(data => {
+                      // * TRAITEMENT AFFICHAGE REPONSE ICI BAS
                       console.log(data);
+                      if(data.status === 'success'){
+
+                        const replyDiv = document.querySelector("#new_reply_"+commentId);
+                        replyDiv.style.display = "block";
+                        const image = document.querySelector("#new_image_"+commentId);
+                        image.src = data.image;
+                        const name = document.querySelector("#new_user_"+commentId);
+                        name.innerHTML = data.name;
+                        const message = document.querySelector("#new_message_"+commentId);
+                        message.innerHTML = data.comment;
+                        const date = document.querySelector("#new_date_"+commentId);
+                        date.innerHTML = data.date;
+                      }
                     })
                     .catch(error => console.error(error));
                   })

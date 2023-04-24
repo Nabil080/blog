@@ -34,7 +34,6 @@ function comment(){
 function reply(){
     $reply = new Reply;
     $replyRepo = new ReplyRepository;
-    var_dump($_POST);
     if($reply->createToInsert($_POST)){
         $replyRepo->insertReply($reply);
     }else{

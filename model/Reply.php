@@ -54,7 +54,7 @@ class ReplyRepository extends ConnectBdd{
             "name" => $user->name,
         );
 
-    echo json_encode($response);
+        echo json_encode($response);
     }
 
 
