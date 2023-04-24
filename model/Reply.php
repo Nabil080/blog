@@ -8,12 +8,21 @@ class Reply{
     public $message;
     public $comment;
     public $user;
-    
-    public function createToInsert(array $categoryForm):bool{
 
-        $this->message = $categoryForm['message'];
-        $this->comment = $categoryForm['comment'];
-        $this->user = $categoryForm['user'];
+    public function createToInsert(array $replyForm):bool{
+
+        $this->message = $replyForm['reply'];
+
+        $user = new User;
+        $userRepo = new UserRepository;
+        $user = $userRepo->getUserById($_SESSION['user']['id']);
+        $this->user = $user;
+
+        $comment = new Comment;
+        $commentRepo = new CommentRepository;
+        $comment = $commentRepo->getCommentById($replyForm['comment']);
+        $this->comment = $comment;
+
 
         return true;
     }
@@ -24,6 +33,30 @@ class ReplyRepository extends ConnectBdd{
     public function __construct(){
         parent::__construct();
     }
+
+    public function insertReply(Reply $reply){
+        $req = $this->bdd->prepare("INSERT INTO reply
+        (reply_message, user_id, comment_id) VALUES (?,?,?)");
+        $req->execute(
+            [$reply->message,$reply->user->id,$reply->comment->id]);
+
+        $user = new User;
+        $userRepo = new UserRepository;
+        $user = $userRepo->getUserByID($_SESSION['user']['id']);
+        $date = date("d M, Y");
+
+        $response = array(
+            "status" => "success",
+            "message" => "La réponse a bien été posté",
+            "comment" => $reply->message,
+            "date" => $date,
+            "image" => "upload/".$user->image,
+            "name" => $user->name,
+        );
+
+        echo json_encode($response);
+    }
+
 
     public function getRepliesByCommentId($commentId){
         $req = $this->bdd->prepare("SELECT * FROM reply WHERE comment_id = ?");

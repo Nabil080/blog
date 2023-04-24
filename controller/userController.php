@@ -21,8 +21,7 @@ function blogArticle(){
     require ('view/blogArticle.php') ;
 }
 
-function Comment(){
-
+function comment(){
     $comment = new Comment;
     $commentRepo = new CommentRepository;
     if($comment->createToInsert($_POST)){
@@ -30,6 +29,34 @@ function Comment(){
     }else{
         // traitement messade d'erreur dans la fonction insertComment
     }
+}
+
+function reply(){
+    $reply = new Reply;
+    $replyRepo = new ReplyRepository;
+    if($reply->createToInsert($_POST)){
+        $replyRepo->insertReply($reply);
+    }else{
+        var_dump('erreur');
+    }
+}
+
+function report(){
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
+    
+    $commentRepo = new CommentRepository;
+    $commentRepo->reportComment($data['comment']);
+    
+}
+
+function delete(){
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
+    
+    $commentRepo = new CommentRepository;
+    $commentRepo->deleteComment($data['comment']);
+    
 }
 
 function profileTreatment(){

@@ -130,28 +130,52 @@ $half_intro = $count_words / 2;
 
 
               <?php foreach($article->comment as $comment){ ?>
-                <div id="comment-<?=$comment->id?>" class="comment">
+                <div id="message_<?=$comment->id?>" style="color:orange"></div>
+                <div id="comment_<?=$comment->id?>" class="comment relative" style="transition:display 2000ms">
+                <!-- boutons gestion commentaire -->
+                  <div style="position:absolute;top:8px;right:8px;display:flex;">
+                        <div id="update_<?=$comment->id?>" onclick="updateCom(<?=$comment->id?>)" style="padding-inline:8px;cursor:pointer;"><i class="fa-solid fa-pen-to-square"></i></div>
+                        <div id="delete_<?=$comment->id?>" onclick="deleteCom(<?=$comment->id?>)" style="padding-inline:8px;cursor:pointer;"><i class="fa-solid fa-trash"></i></div>
+                        <div id="report_<?=$comment->id?>" onclick="reportCom(<?=$comment->id?>)" style="padding-inline:8px;cursor:pointer;"><i class="fa-solid fa-exclamation"></i></div>
+                  </div>
                   <div class="d-flex">
                     <div class="comment-img"><img src="upload/<?=$comment->user->image?>" alt=""></div>
                     <div>
-                      <h5><a href=""><?=$comment->user->name?></a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
+                      <h5><a href=""><?=$comment->user->name?></a> <a id="reply_<?=$comment->id?>" onclick="reply('<?=$comment->id?>')" style="cursor:pointer;" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
                       <time datetime="2020-01-01"><?=formatDate($comment->date)?></time>
                       <p>
                         <?=$comment->message?>
                       </p>
                     </div>
                   </div>
-                      
+                    <form id="replyForm<?=$comment->id?>" style="display:none">
+                      <input type="text" name="comment" style="display:none" value="<?=$comment->id?>">
+                      <textarea name="reply"></textarea>
+                      <button type="submit" name="submit">Répondre</button>
+                    </form>
+                    <div id="new_reply_<?=$comment->id?>" class="comment comment-reply" style="display:none">
+                      <div class="d-flex">
+                        <div class="comment-img">
+                          <img id="new_image_<?=$comment->id?>" src="" alt="">
+                        </div>
+                        <div>
+                          <h5><a id="new_user_<?=$comment->id?>" href=""><!--pseudo--></a> <a class="reply"><i class="bi bi-reply-fill"></i>Reply</a></h5>
+                          <time id="new_date_<?=$comment->id?>" datetime="2020-01-01"><!--date --></time>
+                          <p id="new_message_<?=$comment->id?>">
+                            <!-- contenu de la réponse -->
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   <?php foreach($comment->reply as $reply){?>
-                  <div id="comment-reply-<?=$reply->id?>" class="comment comment-reply">
+                  <div id="comment_reply_<?=$reply->id?>" class="comment comment-reply">
                   <div class="d-flex">
                     <div class="comment-img"><img src="upload/<?=$reply->user->image?>" alt=""></div>
                     <div>
-                      <h5><a href=""><?=$reply->user->name?></a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
+                      <h5><a href=""><?=$reply->user->name?></a> <a class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
                       <time datetime="2020-01-01"><?=formatDate($reply->date)?></time>
                       <p>
-                      <?=$reply->message?>
-                        </p>
+                      <?=$reply->message?></p>
                     </div>
                   </div>
                   </div><!-- End comment #1 -->
@@ -162,7 +186,7 @@ $half_intro = $count_words / 2;
 
               <div class="reply-form">
 
-                <h4>Leave a Reply</h4>
+                <h4>Leave a comment</h4>
                 <p>Your email address will not be published. Required fields are marked * </p>
                 <form id="comment-form">
                   <div class="row">
@@ -184,9 +208,98 @@ $half_intro = $count_words / 2;
                   <button id="sub-com" type="submit" class="btn btn-primary">Post Comment</button>
                 </form>
 
-              <script>
+                <script>
 
-                      // TODO : TRAITEMENT AJAX
+                function deleteCom(commentId){
+                  console.log(commentId);
+
+                  fetch('?action=delete_com',{
+                  method: "POST",
+                  // headers: {'Content-Type': 'application/json'},
+                  body: JSON.stringify({comment: commentId}),
+                })
+                .then(function(response) {
+                  return response.text();
+                })
+                .then(function(data) {
+                  data = JSON.parse(data);
+
+                  if(data.status === 'success'){
+                    const commentDiv = document.getElementById("comment_"+commentId);
+                    commentDiv.style.display = "none";
+                    const messageDiv = document.getElementById("message_"+commentId);
+                    messageDiv.innerText = data.message
+                  }
+                });
+                }
+
+                function updateCom(commentId){
+                  const commentDiv = document.getElementById("comment_"+commentId);
+                  console.log(commentDiv);
+                }
+
+                function reportCom(commentId){
+                console.log(commentId);
+
+                fetch('?action=report_com',{
+                  method: "POST",
+                  // headers: {'Content-Type': 'application/json'},
+                  body: JSON.stringify({comment: commentId}),
+                })
+                .then(function(response) {
+                  return response.text();
+                })
+                .then(function(data) {
+                  data = JSON.parse(data);
+                  console.log(data);g
+                  if(data.status === 'success'){
+                    const messageDiv = document.getElementById("message_"+commentId);
+                    messageDiv.innerText = data.message
+                  }
+                });
+              }
+
+
+
+                function reply(commentId){
+                  // console.log(commentId);
+                  const replyForm = document.getElementById("replyForm"+commentId);
+                  // console.log(replyForm);
+                  replyForm.style.display = "block";
+
+                  replyForm.addEventListener('submit', function(event){
+                    event.preventDefault();
+                    // * TRAITEMENT AJAX ICI BAS
+
+                    const formData = new FormData(replyForm);
+                    fetch('index.php?action=reply_php',{
+                        method: "POST",
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                      // * TRAITEMENT AFFICHAGE REPONSE ICI BAS
+                      console.log(data);
+                      if(data.status === 'success'){
+
+                        const replyDiv = document.querySelector("#new_reply_"+commentId);
+                        replyDiv.style.display = "block";
+                        const image = document.querySelector("#new_image_"+commentId);
+                        image.src = data.image;
+                        const name = document.querySelector("#new_user_"+commentId);
+                        name.innerHTML = data.name;
+                        const message = document.querySelector("#new_message_"+commentId);
+                        message.innerHTML = data.comment;
+                        const date = document.querySelector("#new_date_"+commentId);
+                        date.innerHTML = data.date;
+                      }
+                    })
+                    .catch(error => console.error(error));
+                  })
+
+                }
+
+                      // TODO : TRAITEMENT AJAX COMMENTAIRE
                       const myForm = document.querySelector("#comment-form")
                       myForm.addEventListener('submit',function(event){
                         event.preventDefault();
@@ -261,28 +374,9 @@ $half_intro = $count_words / 2;
                                   
                                   const submitButton = document.querySelector("#sub-com");
                                   submitButton.disabled = true;
-
                                 }
-
-
-
-
                         })
-
-
-
-
                       })
-
-
-
-
-
-
-
-
-
-
 
 
 

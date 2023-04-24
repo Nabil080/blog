@@ -24,6 +24,15 @@
                 case'comment_php':
                     comment();
                     break;
+                case'reply_php':
+                    reply();
+                    break;
+                case'report_com':
+                    report();
+                    break;
+                case'delete_com':
+                    delete();
+                    break;
                 default:
                     homepage();
                     break;

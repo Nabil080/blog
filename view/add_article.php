@@ -8,7 +8,7 @@
     <label>Nom de l'article</label>
     <input type="text" name="name" placeholder="nom de l'article">
     <label>Intro de l'article</label>
-    <input type="text" name="intro" placeholder="intro de l'article">
+    <textarea rows="6"> name="intro" placeholder="intro de l'article"></textarea>
     <label>Citation de l'article</label>
     <input type="text" name="quote">
     <label>Image de l'article</label>
@@ -53,7 +53,7 @@ $articles = $articleRepository->getArticles();
     <label>Titre de la section</label>
     <input type="text" name="section_title" >
     <label>Texte de la section</label>
-    <input type="text" name="section_text">
+    <textarea rows="6" type="text" name="section_text"></textarea>
     <label>Image de la section</label>
     <input type="file" name="section_image">
     <button type ="submit" name="section">submit</button>
@@ -63,6 +63,7 @@ $articles = $articleRepository->getArticles();
 
 if(isset($_POST['section'])){
     $section = new Section;
+    var_dump($_POST);
     if($section->createToInsert($_POST)){
         $sectionRepo = new SectionRepository;
         $sectionRepo->insertSection($section);

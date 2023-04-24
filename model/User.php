@@ -117,7 +117,7 @@ class UserRepository extends ConnectBdd{
                 return $user;
             }else{
 
-                if(str_contains("?signup",$_SERVER['HTTP_REFERER'])){
+                if(str_contains("signup",$_SERVER['REQUEST_URI'])){
                     $response = array(
                         "status" => "failure",
                         "message" => "E-mail lié a aucun compte"
@@ -184,7 +184,10 @@ class UserRepository extends ConnectBdd{
     public function validateMail($token){
         $req = $this->bdd->prepare("UPDATE `user` SET user_active = 1 WHERE `user_token` = ?");
         $req->execute([$token]);
-        header('Location: index.php');
+        $req = $this->bdd->prepare("SELECT user_mail FROM user WHERE user_token = ?");
+        $req->execute([$token]);
+        $mail = $req->fetch();
+        header('Location: index.php?action=login&mail='.$mail['user_mail']);
     }
 
     public function resetPasswordAccess($token){
