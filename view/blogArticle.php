@@ -243,12 +243,12 @@ $half_intro = $count_words / 2;
                   const commentMessage = document.getElementById("comment_message_"+commentId);
                   const updateForm = document.getElementById("update_message_"+commentId);
 
-                  if(commentMessage.style.display == "block"){
-                    updateForm.style.display = "block";
-                    commentMessage.style.display = "none";
-                  }else{
-                    updateForm.style.display = "none";
+                  if(updateForm.style.display == "block"){
                     commentMessage.style.display = "block";
+                    updateForm.style.display = "none";
+                  }else{
+                    commentMessage.style.display = "none";
+                    updateForm.style.display = "block";
                   }
 
 
@@ -264,7 +264,16 @@ $half_intro = $count_words / 2;
                       })
                       .then(response => response.json())
                       .then(data => {
-                        console.log(data)
+
+                          if(data.status === 'success'){
+                            commentMessage.innerText = data.comment;
+                            updateForm.style.display = "none";
+                            commentMessage.style.display = "block";
+                          }
+                          
+                          const messageDiv = document.getElementById("message_"+commentId);
+                          messageDiv.innerText = data.message
+
                       })
                   })
 

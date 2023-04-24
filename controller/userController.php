@@ -63,8 +63,7 @@ function update(){
     $commentRepo = new CommentRepository;
     $comment = new Comment;
     if($comment->createToModify($_POST)){
-        var_dump($_POST);
-        // $commentRepo->updateComment($_POST)
+        $commentRepo->updateComment($_POST);
     }
 
 }

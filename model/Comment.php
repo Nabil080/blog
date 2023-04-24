@@ -91,6 +91,19 @@ class CommentRepository extends ConnectBdd{
         echo json_encode($response);
     }
 
+    public function updateComment(array $commentPost){
+        $req = $this->bdd->prepare("UPDATE comment SET comment_message = ? WHERE comment_id = ?");
+        $req->execute([$commentPost['new_comment'],$commentPost['commentId']]);
+
+        $response = array(
+            "status" => "success",
+            "message" => "Le commentaire a bien été modifié !",
+            "comment" => $commentPost['new_comment'],
+        );
+
+        echo json_encode($response);
+    }
+
     public function getCommentByArticleId($articleId){
         $req = $this->bdd->prepare("SELECT * FROM comment WHERE article_id = ? ORDER BY article_id DESC");
         $req->execute([$articleId]);
