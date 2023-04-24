@@ -10,17 +10,29 @@ class Comment{
     public $user;
     public $reply;
 
-    public function createToInsert(array $categoryForm):bool{
+    public function createToInsert(array $commentForm):bool{
 
-        if(securizeComment($categoryForm['comment']) == false){
+        if(securizeComment($commentForm['comment']) == false){
 
             return false;
         }else{
-            $this->message = securizeComment($categoryForm['comment']);
+            $this->message = securizeComment($commentForm['comment']);
         }
 
-        $this->article = $categoryForm['article'];
-        $this->user = $categoryForm['user'];
+        $this->article = $commentForm['article'];
+        $this->user = $commentForm['user'];
+
+        return true;
+    }
+
+    public function createToModify(array $commentForm){
+        if(securizeComment($commentForm['new_comment']) == false){
+
+            return false;
+        }else{
+            $this->message = securizeComment($commentForm['new_comment']);
+        }
+        $this->id = $commentForm['commentId'];
 
         return true;
     }

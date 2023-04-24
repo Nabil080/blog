@@ -143,9 +143,14 @@ $half_intro = $count_words / 2;
                     <div>
                       <h5><a href=""><?=$comment->user->name?></a> <a id="reply_<?=$comment->id?>" onclick="reply('<?=$comment->id?>')" style="cursor:pointer;" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
                       <time datetime="2020-01-01"><?=formatDate($comment->date)?></time>
-                      <p>
+                      <p id ="comment_message_<?=$comment->id?>">
                         <?=$comment->message?>
                       </p>
+                      <form id="update_message_<?=$comment->id?>" style="display:none">
+                        <textarea name="new_comment"></textarea>
+                        <input type="text" value="<?=$comment->id?>" name="commentId" style="display:none">
+                        <button type="submit">Modifier</button>
+                      </form>
                     </div>
                   </div>
                     <form id="replyForm<?=$comment->id?>" style="display:none">
@@ -235,7 +240,34 @@ $half_intro = $count_words / 2;
 
                 function updateCom(commentId){
                   const commentDiv = document.getElementById("comment_"+commentId);
-                  console.log(commentDiv);
+                  const commentMessage = document.getElementById("comment_message_"+commentId);
+                  const updateForm = document.getElementById("update_message_"+commentId);
+
+                  if(commentMessage.style.display == "block"){
+                    updateForm.style.display = "block";
+                    commentMessage.style.display = "none";
+                  }else{
+                    updateForm.style.display = "none";
+                    commentMessage.style.display = "block";
+                  }
+
+
+                  updateForm.addEventListener("submit", function(event){
+                      event.preventDefault();
+
+
+                      // * TRAITEMENT FETCH
+                      const formData = new FormData(updateForm);
+                      fetch('?action=update_com',{
+                        method: "POST",
+                        body: formData,
+                      })
+                      .then(response => response.json())
+                      .then(data => {
+                        console.log(data)
+                      })
+                  })
+
                 }
 
                 function reportCom(commentId){
@@ -251,7 +283,7 @@ $half_intro = $count_words / 2;
                 })
                 .then(function(data) {
                   data = JSON.parse(data);
-                  console.log(data);g
+                  console.log(data);
                   if(data.status === 'success'){
                     const messageDiv = document.getElementById("message_"+commentId);
                     messageDiv.innerText = data.message
@@ -265,7 +297,11 @@ $half_intro = $count_words / 2;
                   // console.log(commentId);
                   const replyForm = document.getElementById("replyForm"+commentId);
                   // console.log(replyForm);
-                  replyForm.style.display = "block";
+                  if(replyForm.style.display == "none"){
+                    replyForm.style.display = "block";
+                  }else{
+                    replyForm.style.display = "none"
+                  }
 
                   replyForm.addEventListener('submit', function(event){
                     event.preventDefault();

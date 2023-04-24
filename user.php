@@ -33,6 +33,9 @@
                 case'delete_com':
                     delete();
                     break;
+                case'update_com':
+                    update();
+                    break;
                 default:
                     homepage();
                     break;
