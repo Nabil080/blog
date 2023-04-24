@@ -130,28 +130,31 @@ $half_intro = $count_words / 2;
 
 
               <?php foreach($article->comment as $comment){ ?>
-                <div id="comment-<?=$comment->id?>" class="comment">
+                <div id="comment_<?=$comment->id?>" class="comment">
                   <div class="d-flex">
                     <div class="comment-img"><img src="upload/<?=$comment->user->image?>" alt=""></div>
                     <div>
-                      <h5><a href=""><?=$comment->user->name?></a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
+                      <h5><a href=""><?=$comment->user->name?></a> <a id="reply_<?=$comment->id?>" onclick="reply('<?=$comment->id?>')" style="cursor:pointer;" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
                       <time datetime="2020-01-01"><?=formatDate($comment->date)?></time>
                       <p>
                         <?=$comment->message?>
                       </p>
                     </div>
                   </div>
-                      
+                    <form id="replyForm<?=$comment->id?>" style="display:none">
+                      <input type="text" name="comment" style="display:none" value="<?=$comment->id?>">
+                      <textarea name="reply"></textarea>
+                      <button type="submit" name="submit">Répondre</button>
+                    </form>
                   <?php foreach($comment->reply as $reply){?>
-                  <div id="comment-reply-<?=$reply->id?>" class="comment comment-reply">
+                  <div id="comment_reply_<?=$reply->id?>" class="comment comment-reply">
                   <div class="d-flex">
                     <div class="comment-img"><img src="upload/<?=$reply->user->image?>" alt=""></div>
                     <div>
-                      <h5><a href=""><?=$reply->user->name?></a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
+                      <h5><a href=""><?=$reply->user->name?></a> <a class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
                       <time datetime="2020-01-01"><?=formatDate($reply->date)?></time>
                       <p>
-                      <?=$reply->message?>
-                        </p>
+                      <?=$reply->message?></p>
                     </div>
                   </div>
                   </div><!-- End comment #1 -->
@@ -162,7 +165,7 @@ $half_intro = $count_words / 2;
 
               <div class="reply-form">
 
-                <h4>Leave a Reply</h4>
+                <h4>Leave a comment</h4>
                 <p>Your email address will not be published. Required fields are marked * </p>
                 <form id="comment-form">
                   <div class="row">
@@ -185,8 +188,31 @@ $half_intro = $count_words / 2;
                 </form>
 
               <script>
+                function reply(commentId){
+                  // console.log(commentId);
+                  const replyForm = document.getElementById("replyForm"+commentId);
+                  // console.log(replyForm);
+                  replyForm.style.display = "block";
 
-                      // TODO : TRAITEMENT AJAX
+                  replyForm.addEventListener('submit', function(event){
+                    event.preventDefault();
+
+                    const formData = new FormData(replyForm);
+                    console.log(formData);
+                    fetch('index.php?action=reply_php',{
+                    method: "POST",
+                    data: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                      console.log(data);
+                    })
+                    .catch(error => console.error(error));
+                  })
+
+                }
+
+                      // TODO : TRAITEMENT AJAX COMMENTAIRE
                       const myForm = document.querySelector("#comment-form")
                       myForm.addEventListener('submit',function(event){
                         event.preventDefault();
@@ -261,28 +287,9 @@ $half_intro = $count_words / 2;
                                   
                                   const submitButton = document.querySelector("#sub-com");
                                   submitButton.disabled = true;
-
                                 }
-
-
-
-
                         })
-
-
-
-
                       })
-
-
-
-
-
-
-
-
-
-
 
 
 

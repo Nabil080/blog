@@ -24,6 +24,9 @@
                 case'comment_php':
                     comment();
                     break;
+                case'reply_php':
+                    reply();
+                    break;
                 default:
                     homepage();
                     break;

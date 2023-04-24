@@ -114,6 +114,36 @@ class CommentRepository extends ConnectBdd{
         return $comments;
     }
 
+    public function getcommentByID($id){
+        $req = $this->bdd->prepare("SELECT * FROM comment WHERE comment_id = ? ");
+        $req->execute([$id]);
+        $data = $req->fetch();
+        // var_dump($data);
+
+        if($data != false){
+            $comment = new comment();
+            $comment->id = $data['comment_id'] ;
+            $comment->date = $data['comment_date'] ;
+            $comment->message = $data['comment_message'] ;
+
+            $user = new User;
+            $userRepo = new UserRepository;
+            $user = $userRepo->getUserByID($data['user_id']);
+            $comment->user = $user;
+
+            $article = new article;
+            $articleRepo = new articleRepository;
+            $article = $articleRepo->getArticle($data['article_id']);
+            $comment->article = $article;
+
+            return $comment;
+        }else{
+
+            return false;
+
+        }
+    }
+
 }
 
 ?>

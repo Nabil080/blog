@@ -21,14 +21,24 @@ function blogArticle(){
     require ('view/blogArticle.php') ;
 }
 
-function Comment(){
-
+function comment(){
     $comment = new Comment;
     $commentRepo = new CommentRepository;
     if($comment->createToInsert($_POST)){
         $commentRepo->insertComment ($comment);
     }else{
         // traitement messade d'erreur dans la fonction insertComment
+    }
+}
+
+function reply(){
+    $reply = new Reply;
+    $replyRepo = new ReplyRepository;
+    var_dump($_POST);
+    if($reply->createToInsert($_POST)){
+        $replyRepo->insertReply($reply);
+    }else{
+        var_dump('erreur');
     }
 }
 
