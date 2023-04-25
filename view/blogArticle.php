@@ -286,10 +286,10 @@ $half_intro = $count_words / 2;
                 .then(function(data) {
                   data = JSON.parse(data);
                   console.log(data);
-                  if(data.status === 'success'){
-                    const messageDiv = document.getElementById("message_"+commentId);
-                    messageDiv.innerText = data.message
-                  }
+
+                  const messageDiv = document.getElementById("message_"+commentId);
+                  messageDiv.innerText = data.message
+
                 });
               }
 
