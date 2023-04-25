@@ -165,7 +165,7 @@ $half_intro = $count_words / 2;
                           <img id="new_image_<?=$comment->id?>" src="" alt="">
                         </div>
                         <div>
-                          <h5><a id="new_user_<?=$comment->id?>" href=""><!--pseudo--></h5>
+                          <h5><a id="new_user_<?=$comment->id?>" href=""><!--pseudo--></a></h5>
                           <time id="new_date_<?=$comment->id?>" datetime="2020-01-01"><!--date --></time>
                           <p id="new_message_<?=$comment->id?>">
                             <!-- contenu de la réponse -->
@@ -178,7 +178,7 @@ $half_intro = $count_words / 2;
                   <div class="d-flex">
                     <div class="comment-img"><img src="upload/<?=$reply->user->image?>" alt=""></div>
                     <div>
-                      <h5><a href=""><?=$reply->user->name?></a> <a class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
+                      <h5><a href=""><?=$reply->user->name?></a></h5>
                       <time datetime="2020-01-01"><?=formatDate($reply->date)?></time>
                       <p>
                       <?=$reply->message?></p>
@@ -272,6 +272,8 @@ $half_intro = $count_words / 2;
                             commentMessage.innerText = data.comment;
                             updateForm.style.display = "none";
                             commentMessage.style.display = "block";
+                          }else{
+                            alert("Ta mère aurait honte de toi...")
                           }
 
                           const messageDiv = document.getElementById("message_"+commentId);

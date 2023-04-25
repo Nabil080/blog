@@ -118,17 +118,27 @@ class CommentRepository extends ConnectBdd{
 
     }
 
-    public function updateComment(array $commentPost){
-        $req = $this->bdd->prepare("UPDATE comment SET comment_message = ? WHERE comment_id = ?");
-        $req->execute([$commentPost['new_comment'],$commentPost['commentId']]);
+    public function updateComment(array $commentPost, Comment $comment){
 
-        $response = array(
-            "status" => "success",
-            "message" => "Le commentaire a bien été modifié !",
-            "comment" => $commentPost['new_comment'],
-        );
+        if($comment->user->id != $_SESSION['user']['id']){
+            $response = array(
+                "status" => "failure",
+                "message" => "Ta mère aurait honte de toi... !",
+            );
+
+            echo json_encode($response);
+        }else{
+            $req = $this->bdd->prepare("UPDATE comment SET comment_message = ? WHERE comment_id = ?");
+            $req->execute([$commentPost['new_comment'],$comment->id]);
+            
+            $response = array(
+                "status" => "success",
+                "message" => "Le commentaire a bien été modifié !",
+                "comment" => $commentPost['new_comment'],
+            );
 
         echo json_encode($response);
+        }
     }
 
     public function getCommentByArticleId($articleId){
