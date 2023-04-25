@@ -146,7 +146,33 @@ class UserRepository extends ConnectBdd{
         echo json_encode($response);
     }
 
-    public function getUserByID(string $id){
+    public function deleteUser(User $user){
+        $req = $this->bdd->prepare("SELECT * FROM comment WHERE user_id = ?");
+        $req->execute([$user->id]);
+        $data = $req->fetchAll();
+        foreach($data as $key){
+            $comment = new Comment;
+            $commentRepo = new CommentRepository;
+            $comment = $commentRepo->getCommentById($key['comment_id']);
+            $commentRepo->deleteComment($comment);
+        }
+
+        $req = $this->bdd->prepare("DELETE FROM reply WHERE user_id =?");
+        $req->execute([$user->id]);
+
+        $req = $this->bdd->prepare("DELETE FROM user WHERE user_id = ?");
+        $req->execute([$user->id]);
+
+        $response = [
+            'status' =>'success',
+            'message' => 'user supprimé'
+        ];
+
+        echo json_encode($response);
+    }
+
+
+    public function getUserByID($id){
         $req = $this->bdd->prepare("SELECT * FROM `user` WHERE `user_id` = ?");
         $req->execute([$id]);
         $data = $req->fetch();
@@ -170,6 +196,30 @@ class UserRepository extends ConnectBdd{
             return [];
 
         }
+    }
+
+    public function getUsers(){
+        $req = $this->bdd->prepare("SELECT * FROM `user`");
+        $req->execute();
+        $data = $req->fetchAll();
+
+        $users = [];
+        foreach ($data as $key){
+            $user = new User();
+            $user->id = $key['user_id'] ;
+            $user->name = $key['user_name'];
+            $user->mail = $key['user_mail'];
+            $user->password = $key['user_password'];
+            $user->image = $key['user_image'];
+            $user->token = $key['user_token'];
+            $user->active = $key['user_active'];
+            $user->role = $key['role_id'];
+            $user->description = $key['user_description'];
+
+            $users[] = $user;
+        }
+
+        return $users;
     }
 
     public function validateMail($token){
