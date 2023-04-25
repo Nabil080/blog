@@ -8,6 +8,9 @@
                     case'crud_article':
                         crudArticle();
                         break;
+                    case'add_article':
+                        addArticle();
+                        break;
                     case'delete_article':
                         deleteArticle();
                         break;

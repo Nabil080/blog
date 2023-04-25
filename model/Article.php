@@ -38,18 +38,28 @@ class Article{
 
             return false;
         }
-        
+
         if(securizeString($articleForm['quote']) == false){
             $this->quote = securizeString($articleForm['quote']);
-            
         }
-        
-        
-        $this->category = $articleForm['category'];
-        $this->user = $_SESSION['user']['id'] ;
-        $this->tag = isset($articleForm['tag']) ?  $articleForm['tag'] : null;
-        // $this->section = $articleForm['section'];
-        
+
+        $category = new Category;
+        $categoryRepo = new CategoryRepository;
+        $category = $categoryRepo->getCategoryById($articleForm['category']);
+        $this->category = $category;
+
+        $user = new User;
+        $userRepo = new UserRepository;
+        $user = $userRepo->getUserById($_SESSION['user']['id']);
+        $this->user = $user;
+
+        if(!empty($articleForm['tag'])){
+            $tag = new Tag;
+            $tagRepo = new TagRepository;
+            $tag = $tagRepo->getTagsById($articleForm['tag']);
+            $this->tag = $tag;
+        }
+
         return true;
     }
 }
@@ -63,17 +73,24 @@ class ArticleRepository extends ConnectBdd{
         $req = $this->bdd->prepare("INSERT INTO article
         (article_name,article_intro,article_quote,article_image,category_id,user_id)
         VALUES (?,?,?,?,?,?)");
-        $req->execute([$article->name,$article->intro,$article->quote,$article->image,$article->category,$article->user]);
+        $req->execute([$article->name,$article->intro,$article->quote,$article->image,$article->category->id,$article->user->id]);
 
-        // foreach($article->tag as $key){
-        //     $tag = new Tag;
-        //     insertArticleTag($key,$this->bdd->lastInsertId())
-        // }
-        
+        $article->id = $this->bdd->lastInsertId();
+
+        foreach($article->tag as $tag){
+            $req = $this->bdd->prepare("INSERT INTO article_tag (article_id,tag_id) VALUES (?,?)");
+            $req->execute([$article->id,$tag->id]);
+        }
+
+        header('Location:?action=admin&admin=crud_article');
+
     }
 
     public function deleteArticle(Article $article){
         $req = $this->bdd->prepare("DELETE FROM section WHERE article_id = ?");
+        $req->execute([$article->id]);
+
+        $req = $this->bdd->prepare("DELETE FROM article_tag WHERE article_id = ?");
         $req->execute([$article->id]);
 
         $req = $this->bdd->prepare("SELECT * FROM comment WHERE article_id = ?");

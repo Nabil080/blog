@@ -12,6 +12,33 @@
 <?php $articleRepo = new ArticleRepository; $articles = $articleRepo->getArticles();?>
 <a href="?action=admin&admin=crud">Accueil</a>
 
+
+<form class="border flex flex-col mx-20 p-4 bg-blue-100 [&>input]:border" enctype="multipart/form-data" action="?action=admin&admin=add_article" method="post">
+
+    <label>Nom de l'article</label>
+    <input type="text" name="name" placeholder="nom de l'article">
+    <label>Intro de l'article</label>
+    <textarea rows="6" name="intro" placeholder="intro de l'article"></textarea>
+    <label>Citation de l'article</label>
+    <input type="text" name="quote">
+    <label>Image de l'article</label>
+    <input type="file" name="image">
+    <label>Catégorie de l'article (un max)</label>
+    <select id="dd" name="category">
+        <option value="1">Catégorie 1</option>
+        <option value="1">Catégorie 2</option>
+        <option value="1">Catégorie 3</option>
+    </select>
+    <label>Tags de l'article (Plusieurs possibles)</label>
+    <select id="dd" name="tag[]" multiple>
+        <option value="1">Tag 1</option>
+        <option value="2">Tag 2</option>
+        <option value="3">Tag 3</option>
+    </select>
+    <button type="submit" class="bg-blue-300 mt-4" name="article">submit</button>
+
+</form>
+
 <table class="w-[90%] mx-auto text-center border-2 border-black">
     <div class="w-fit mx-auto text-xl">Articles</div>
         <tr class="mb-4 divide-gray-500 divide-x-2 bg-blue-300 ">
@@ -24,7 +51,16 @@
             <th>Categorie</th>
             <th>Tags</th>
         </tr>
-
+            <tr id="new_article" class="space-x-4 divide-gray-500 divide-x-2">
+                <td>article name</td>
+                <td>article id</td>
+                <td>article date</td>
+                <td>article intro</td>
+                <td>article quote</td>
+                <td>article image</td>
+                <td>article categorie</td>
+                <td>article tag</td>
+            </tr>
         <?php
             foreach ($articles as $article) {
                 $tags = [];
@@ -44,6 +80,27 @@
             </tr>
             <?php $color = isset($color) ? null : 'bg-blue-200' ;}?>
 </table>
+
+<form enctype="multipart/form-data" action="?action=admin&admin=add_section" method="post">
+    <?php
+    $articleRepository = new ArticleRepository;
+    $articles = $articleRepository->getArticles();
+    ?>
+    <select name="article_id">
+        <?php foreach($articles as $article){ ?>
+            <option value="<?=$article->id?>"><?=$article->name?></option>
+        <?php } ?>
+    </select>
+    <label>Titre de la section</label>
+    <input type="text" name="section_title" >
+    <label>Texte de la section</label>
+    <textarea rows="6" type="text" name="section_text"></textarea>
+    <label>Image de la section</label>
+    <input type="file" name="section_image">
+    <button type ="submit" name="section">submit</button>
+</form>
+
+
 </body>
 </html>
 
@@ -68,55 +125,6 @@ function deleteArticle(id){
 
 
 
-
-
-
-
-<form enctype="multipart/form-data" action="?action=admin&admin=add_article" method="post">
-
-    <label>Nom de l'article</label>
-    <input type="text" name="name" placeholder="nom de l'article">
-    <label>Intro de l'article</label>
-    <textarea rows="6" name="intro" placeholder="intro de l'article"></textarea>
-    <label>Citation de l'article</label>
-    <input type="text" name="quote">
-    <label>Image de l'article</label>
-    <input type="file" name="image">
-    <label>Catégorie de l'article (un max)
-    <select id="dd" name="category">
-        <option value="1">Catégorie 1</option>
-        <option value="1">Catégorie 2</option>
-        <option value="1">Catégorie 3</option>
-    </select>
-    <label>Tags de l'article (Plusieurs possibles)
-    <select id="dd" name="tag[]" multiple>
-        <option value="1">Tag 1</option>
-        <option value="2">Tag 2</option>
-        <option value="3">Tag 3</option>
-    </select>
-    <button type="submit" name="article">submit</button>
-
-</form>
-
-
-<form enctype="multipart/form-data" action="?action=admin&admin=add_section" method="post">
-    <?php
-    $articleRepository = new ArticleRepository;
-    $articles = $articleRepository->getArticles();
-    ?>
-    <select name="article_id">
-        <?php foreach($articles as $article){ ?>
-            <option value="<?=$article->id?>"><?=$article->name?></option>
-        <?php } ?>
-    </select>
-    <label>Titre de la section</label>
-    <input type="text" name="section_title" >
-    <label>Texte de la section</label>
-    <textarea rows="6" type="text" name="section_text"></textarea>
-    <label>Image de la section</label>
-    <input type="file" name="section_image">
-    <button type ="submit" name="section">submit</button>
-</form>
 
 
 <script>
