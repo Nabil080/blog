@@ -159,6 +159,7 @@ $half_intro = $count_words / 2;
                       <button type="submit" name="submit">Répondre</button>
                     </form>
                     <div id="new_reply_<?=$comment->id?>" class="comment comment-reply" style="display:none">
+                    
                       <div class="d-flex">
                         <div class="comment-img">
                           <img id="new_image_<?=$comment->id?>" src="" alt="">
@@ -245,12 +246,12 @@ $half_intro = $count_words / 2;
                   const commentMessage = document.getElementById("comment_message_"+commentId);
                   const updateForm = document.getElementById("update_message_"+commentId);
 
-                  if(commentMessage.style.display == "block"){
-                    updateForm.style.display = "block";
-                    commentMessage.style.display = "none";
-                  }else{
-                    updateForm.style.display = "none";
+                  if(updateForm.style.display == "block"){
                     commentMessage.style.display = "block";
+                    updateForm.style.display = "none";
+                  }else{
+                    commentMessage.style.display = "none";
+                    updateForm.style.display = "block";
                   }
 
 
@@ -266,7 +267,16 @@ $half_intro = $count_words / 2;
                       })
                       .then(response => response.json())
                       .then(data => {
-                        console.log(data)
+
+                          if(data.status === 'success'){
+                            commentMessage.innerText = data.comment;
+                            updateForm.style.display = "none";
+                            commentMessage.style.display = "block";
+                          }
+
+                          const messageDiv = document.getElementById("message_"+commentId);
+                          messageDiv.innerText = data.message
+
                       })
                   })
 
@@ -358,7 +368,7 @@ $half_intro = $count_words / 2;
 
                                   // Create the outer div element
                                   const commentDiv = document.createElement("div");
-                                  commentDiv.className = "comment";
+                                  commentDiv.className = "comment relative";
 
                                   // Create the d-flex div element
                                   const dFlexDiv = document.createElement("div");
@@ -405,9 +415,9 @@ $half_intro = $count_words / 2;
                                   commentDiv.appendChild(dFlexDiv);
                                   dFlexDiv.appendChild(commentImgDiv);
                                   dFlexDiv.appendChild(wrapperDiv);
-                                    wrapperDiv.appendChild(h5);
-                                    wrapperDiv.appendChild(time);
-                                    wrapperDiv.appendChild(p);
+                                  wrapperDiv.appendChild(h5);
+                                  wrapperDiv.appendChild(time);
+                                  wrapperDiv.appendChild(p);
                                   commentsDiv.parentNode.insertBefore(commentDiv, commentsDiv.nextSibling);
                                   
                                   const submitButton = document.querySelector("#sub-com");

@@ -67,8 +67,7 @@ function update(){
     $commentRepo = new CommentRepository;
     $comment = new Comment;
     if($comment->createToModify($_POST)){
-        var_dump($_POST);
-        // $commentRepo->updateComment($_POST)
+        $commentRepo->updateComment($_POST);
     }
 
 }
@@ -76,7 +75,6 @@ function update(){
 function profileTreatment(){
     $user = new User;
     $userRepo = new UserRepository;
-
     if($user->createToModify($_POST)){
         $userRepo->updateUser($user);
     }else{

@@ -48,17 +48,6 @@ class User{
 
     public function createToModify(array $userPost):bool{
 
-
-      if(isset($userPost['password'])){
-            if(securizePassword($userPost['password'],$userPost['confirm_password'])){
-
-            $this->password = securizePassword($userPost['password'],$userPost['password']);
-            }else{
-
-            return false;
-            }
-     }
-
         if(isset($userPost['name'])){    
             if(securizeString($userPost['name']) != false){
                 $this->name = securizeString($userPost['name']);
@@ -78,17 +67,19 @@ class User{
         }
 
         if(isset($userPost['description'])){
-            if(securizeString($userPost['description']) != false){
-                $this->description = securizeString($userPost['description']);
-            }else{
+                $this->description = filter_var(trim($userPost['description']), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        }
 
-                return false;
+        if(isset($userPost['password']) && !empty($userPost['password'])){
+            if(securizePassword($userPost['password'],$userPost['confirm_password'])){
+                $this->password = securizePassword($userPost['password'],$userPost['password']);
             }
         }
 
             return true;
     }
 }
+
 
 class UserRepository extends ConnectBdd{
 
@@ -297,7 +288,7 @@ class UserRepository extends ConnectBdd{
             $req->execute([$user->mail,$_SESSION['user']['id']]);
         }
 
-        if($user->description != null){
+        if(isset($user->description)){
             $req = $this->bdd->prepare("UPDATE user  SET user_description = ? WHERE user_id = ?");
             $req->execute([$user->description,$_SESSION['user']['id']]);
         }
