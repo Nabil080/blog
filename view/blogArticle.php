@@ -165,7 +165,7 @@ $half_intro = $count_words / 2;
                           <img id="new_image_<?=$comment->id?>" src="" alt="">
                         </div>
                         <div>
-                          <h5><a id="new_user_<?=$comment->id?>" href=""><!--pseudo--></a> <a class="reply"><i class="bi bi-reply-fill"></i>Reply</a></h5>
+                          <h5><a id="new_user_<?=$comment->id?>" href=""><!--pseudo--></h5>
                           <time id="new_date_<?=$comment->id?>" datetime="2020-01-01"><!--date --></time>
                           <p id="new_message_<?=$comment->id?>">
                             <!-- contenu de la réponse -->
@@ -340,6 +340,8 @@ $half_intro = $count_words / 2;
                         message.innerHTML = data.comment;
                         const date = document.querySelector("#new_date_"+commentId);
                         date.innerHTML = data.date;
+
+                        replyForm.style.display = "none"
                       }
                     })
                     .catch(error => console.error(error));

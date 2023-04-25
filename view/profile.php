@@ -17,8 +17,8 @@ $commentRepo = new CommentRepository;
 $comments = $commentRepo->getUserComments($_SESSION['user']['id']);
 ?>
 
-<section class="vh-100" style="background-color: #f4f5f7;">
-  <div class="container py-5 h-100">
+<section  style="background-color: #f4f5f7;">
+  <div class="container py-5 h-100" >
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col col-lg-6 mb-4 mb-lg-0">
         <div class="card mb-3" style="border-radius: .5rem;">
