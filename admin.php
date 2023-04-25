@@ -20,6 +20,12 @@
                     case'delete_user':
                         deleteUser();
                         break;
+                    case'crud_comment':
+                        crudComment();
+                        break;
+                    case'delete_comment':
+                        deleteComment();
+                        break;
                     case'add_section':
                         addSection();
                         break;
