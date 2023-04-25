@@ -10,6 +10,7 @@
 </head>
 <body>
 <?php $articleRepo = new ArticleRepository; $articles = $articleRepo->getArticles();?>
+<a href="?action=admin&admin=crud">Accueil</a>
 
 <table class="w-[90%] mx-auto text-center border-2 border-black">
     <div class="w-fit mx-auto text-xl">Articles</div>
