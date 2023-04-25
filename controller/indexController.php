@@ -40,9 +40,6 @@ function signUpTreatment(){
 
 function loginTreatment(){
     $userRepo = new UserRepository;
-    // $postData = json_decode(file_get_contents("php://input"), true);
-    // var_dump($postData);
-    // var_dump($_POST);
     $user = $userRepo->getUserByMail($_POST['mail']);
 
     if($user != []){

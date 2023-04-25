@@ -4,9 +4,6 @@ require_once('controller/indexController.php');
 require_once('controller/userController.php');
 require_once('controller/adminController.php');
 
-// var_dump($_SESSION);
-// $_SESSION['slt'] = 0;
-
 if(!isset($_SESSION['user'])){
     if(isset($_GET['action'])){
         switch($_GET['action']){
@@ -38,6 +35,5 @@ if(!isset($_SESSION['user'])){
 }else{
     require('user.php');
 }
-
 
 ?>

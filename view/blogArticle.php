@@ -126,16 +126,16 @@ $half_intro = $count_words / 2;
 
             <div id="comments" class="comments">
             <h4 class="comments-count"><?=count($article->comment)?> comments</h4>
-            
-
 
               <?php foreach($article->comment as $comment){ ?>
                 <div id="message_<?=$comment->id?>" style="color:orange"></div>
                 <div id="comment_<?=$comment->id?>" class="comment relative" style="transition:display 2000ms">
                 <!-- boutons gestion commentaire -->
                   <div style="position:absolute;top:8px;right:8px;display:flex;">
+                  <?php if($_SESSION['user']['id'] == $comment->user->id OR $_SESSION['user']['role'] == 1){ ?>
                         <div id="update_<?=$comment->id?>" onclick="updateCom(<?=$comment->id?>)" style="padding-inline:8px;cursor:pointer;"><i class="fa-solid fa-pen-to-square"></i></div>
                         <div id="delete_<?=$comment->id?>" onclick="deleteCom(<?=$comment->id?>)" style="padding-inline:8px;cursor:pointer;"><i class="fa-solid fa-trash"></i></div>
+                  <?php }?>
                         <div id="report_<?=$comment->id?>" onclick="reportCom(<?=$comment->id?>)" style="padding-inline:8px;cursor:pointer;"><i class="fa-solid fa-exclamation"></i></div>
                   </div>
                   <div class="d-flex">
@@ -159,12 +159,13 @@ $half_intro = $count_words / 2;
                       <button type="submit" name="submit">Répondre</button>
                     </form>
                     <div id="new_reply_<?=$comment->id?>" class="comment comment-reply" style="display:none">
+                    
                       <div class="d-flex">
                         <div class="comment-img">
                           <img id="new_image_<?=$comment->id?>" src="" alt="">
                         </div>
                         <div>
-                          <h5><a id="new_user_<?=$comment->id?>" href=""><!--pseudo--></a> <a class="reply"><i class="bi bi-reply-fill"></i>Reply</a></h5>
+                          <h5><a id="new_user_<?=$comment->id?>" href=""><!--pseudo--></a></h5>
                           <time id="new_date_<?=$comment->id?>" datetime="2020-01-01"><!--date --></time>
                           <p id="new_message_<?=$comment->id?>">
                             <!-- contenu de la réponse -->
@@ -177,7 +178,7 @@ $half_intro = $count_words / 2;
                   <div class="d-flex">
                     <div class="comment-img"><img src="upload/<?=$reply->user->image?>" alt=""></div>
                     <div>
-                      <h5><a href=""><?=$reply->user->name?></a> <a class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
+                      <h5><a href=""><?=$reply->user->name?></a></h5>
                       <time datetime="2020-01-01"><?=formatDate($reply->date)?></time>
                       <p>
                       <?=$reply->message?></p>
@@ -212,7 +213,6 @@ $half_intro = $count_words / 2;
                   <p id="message" style="color:orange;"></p>
                   <button id="sub-com" type="submit" class="btn btn-primary">Post Comment</button>
                 </form>
-
                 <script>
 
                 function deleteCom(commentId){
@@ -232,9 +232,12 @@ $half_intro = $count_words / 2;
                   if(data.status === 'success'){
                     const commentDiv = document.getElementById("comment_"+commentId);
                     commentDiv.style.display = "none";
-                    const messageDiv = document.getElementById("message_"+commentId);
-                    messageDiv.innerText = data.message
+                  }else{
+                    alert("Ta mère aurait honte de toi...")
                   }
+
+                  const messageDiv = document.getElementById("message_"+commentId);
+                    messageDiv.innerText = data.message
                 });
                 }
 
@@ -243,12 +246,12 @@ $half_intro = $count_words / 2;
                   const commentMessage = document.getElementById("comment_message_"+commentId);
                   const updateForm = document.getElementById("update_message_"+commentId);
 
-                  if(commentMessage.style.display == "block"){
-                    updateForm.style.display = "block";
-                    commentMessage.style.display = "none";
-                  }else{
-                    updateForm.style.display = "none";
+                  if(updateForm.style.display == "block"){
                     commentMessage.style.display = "block";
+                    updateForm.style.display = "none";
+                  }else{
+                    commentMessage.style.display = "none";
+                    updateForm.style.display = "block";
                   }
 
 
@@ -264,7 +267,18 @@ $half_intro = $count_words / 2;
                       })
                       .then(response => response.json())
                       .then(data => {
-                        console.log(data)
+
+                          if(data.status === 'success'){
+                            commentMessage.innerText = data.comment;
+                            updateForm.style.display = "none";
+                            commentMessage.style.display = "block";
+                          }else{
+                            alert("Ta mère aurait honte de toi...")
+                          }
+
+                          const messageDiv = document.getElementById("message_"+commentId);
+                          messageDiv.innerText = data.message
+
                       })
                   })
 
@@ -284,10 +298,10 @@ $half_intro = $count_words / 2;
                 .then(function(data) {
                   data = JSON.parse(data);
                   console.log(data);
-                  if(data.status === 'success'){
-                    const messageDiv = document.getElementById("message_"+commentId);
-                    messageDiv.innerText = data.message
-                  }
+
+                  const messageDiv = document.getElementById("message_"+commentId);
+                  messageDiv.innerText = data.message
+
                 });
               }
 
@@ -328,6 +342,8 @@ $half_intro = $count_words / 2;
                         message.innerHTML = data.comment;
                         const date = document.querySelector("#new_date_"+commentId);
                         date.innerHTML = data.date;
+
+                        replyForm.style.display = "none"
                       }
                     })
                     .catch(error => console.error(error));
@@ -356,7 +372,7 @@ $half_intro = $count_words / 2;
 
                                   // Create the outer div element
                                   const commentDiv = document.createElement("div");
-                                  commentDiv.className = "comment";
+                                  commentDiv.className = "comment relative";
 
                                   // Create the d-flex div element
                                   const dFlexDiv = document.createElement("div");
@@ -403,9 +419,9 @@ $half_intro = $count_words / 2;
                                   commentDiv.appendChild(dFlexDiv);
                                   dFlexDiv.appendChild(commentImgDiv);
                                   dFlexDiv.appendChild(wrapperDiv);
-                                    wrapperDiv.appendChild(h5);
-                                    wrapperDiv.appendChild(time);
-                                    wrapperDiv.appendChild(p);
+                                  wrapperDiv.appendChild(h5);
+                                  wrapperDiv.appendChild(time);
+                                  wrapperDiv.appendChild(p);
                                   commentsDiv.parentNode.insertBefore(commentDiv, commentsDiv.nextSibling);
                                   
                                   const submitButton = document.querySelector("#sub-com");
