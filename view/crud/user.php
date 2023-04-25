@@ -10,6 +10,7 @@
 </head>
 <body>
 <?php $userRepo = new UserRepository; $users = $userRepo->getUsers();?>
+<a href="?action=admin&admin=crud">Accueil</a>
 
 <table class="w-[80%] mx-[10%] text-center border-2 border-black">
     <div class="w-fit mx-auto text-xl">Utilisateurs</div>

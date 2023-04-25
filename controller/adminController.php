@@ -8,6 +8,16 @@ function crudArticle(){
     require('view/crud/article.php');
 }
 
+function addArticle(){
+    if(isset($_POST)){
+        $article = new Article;
+        if($article->createToInsert($_POST)){
+            $articleRepo = new ArticleRepository;
+            $articleRepo->insertArticle($article);
+        }
+    }
+}
+
 function deleteArticle(){
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
@@ -36,16 +46,22 @@ function deleteUser(){
     }
 }
 
-function addArticle(){
-    if(isset($_POST['article'])){
-        $article = new Article;
-        if($article->createToInsert($_POST)){
-            $articleRepo = new ArticleRepository;
-            $articleRepo->insertArticle($article);
-            var_dump($article);
-        }
+function crudComment(){
+    require('view/crud/comment.php');
+}
+
+function deleteComment(){
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
+    
+    if($_SESSION['user']['role'] == 1){
+        $comment = new Comment;
+        $commentRepo = new CommentRepository;
+        $comment = $commentRepo->getCommentById($data['id']);
+        $commentRepo->deleteComment($comment);
     }
 }
+
 
 function addSection(){
     if(isset($_POST['section'])){

@@ -13,6 +13,7 @@
 
 <a href="?action=admin&admin=crud_user">Utilisateurs</a>
 <a href="?action=admin&admin=crud_article">Articles</a>
+<a href="?action=admin&admin=crud_comment">Commentaires</a>
 
 </nav>
 </body>

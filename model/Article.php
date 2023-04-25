@@ -17,7 +17,6 @@ class Article{
 
     public function createToInsert(array $articleForm):bool{
 
-
         if(securizeString($articleForm['name']) == false){
 
             return false;
@@ -38,18 +37,30 @@ class Article{
 
             return false;
         }
-        
-        if(securizeString($articleForm['quote']) == false){
-            $this->quote = securizeString($articleForm['quote']);
-            
+
+        if(!empty($articleForm['quote'])){
+            if(securizeString($articleForm['quote']) != false){
+                $this->quote = securizeString($articleForm['quote']);
+            }
         }
-        
-        
-        $this->category = $articleForm['category'];
-        $this->user = $_SESSION['user']['id'] ;
-        $this->tag = isset($articleForm['tag']) ?  $articleForm['tag'] : null;
-        // $this->section = $articleForm['section'];
-        
+
+        $category = new Category;
+        $categoryRepo = new CategoryRepository;
+        $category = $categoryRepo->getCategoryById($articleForm['category']);
+        $this->category = $category;
+
+        $user = new User;
+        $userRepo = new UserRepository;
+        $user = $userRepo->getUserById($_SESSION['user']['id']);
+        $this->user = $user;
+
+        if(isset($articleForm['tag'])){
+            $tag = new Tag;
+            $tagRepo = new TagRepository;
+            $tag = $tagRepo->getTagsById($articleForm['tag']);
+            $this->tag = $tag;
+        }
+
         return true;
     }
 }
@@ -63,17 +74,46 @@ class ArticleRepository extends ConnectBdd{
         $req = $this->bdd->prepare("INSERT INTO article
         (article_name,article_intro,article_quote,article_image,category_id,user_id)
         VALUES (?,?,?,?,?,?)");
-        $req->execute([$article->name,$article->intro,$article->quote,$article->image,$article->category,$article->user]);
+        $req->execute([$article->name,$article->intro,$article->quote,$article->image,$article->category->id,$article->user->id]);
 
-        // foreach($article->tag as $key){
-        //     $tag = new Tag;
-        //     insertArticleTag($key,$this->bdd->lastInsertId())
-        // }
-        
+        $article->id = $this->bdd->lastInsertId();
+        $article->date = formatDate(date('Y-m-d H:i:s'));
+
+        if(!empty($_POST['tag'])){
+            $tags = [];
+            foreach($article->tag as $tag){
+                $req = $this->bdd->prepare("INSERT INTO article_tag (article_id,tag_id) VALUES (?,?)");
+                $req->execute([$article->id,$tag->id]);
+                $new_tag = new Tag;
+                $tagRepo = new TagRepository;
+                $new_tag = $tagRepo->getTagById($tag->id);
+                $tags[] = $new_tag->name;
+            }
+            $tags = implode(',',$tags);
+        }
+
+        $response = [
+            'status' =>'success',
+            'message' => 'Article ajouté',
+            'titre' => $article->name,
+            'id' => $article->id,
+            'date' => $article->date,
+            'intro' => $article->intro,
+            'quote' => $article->quote,
+            'image' => $article->image,
+            'category' => $article->category->name,
+            'tags' => isset($tags) ? $tags : "",
+        ];
+
+        echo json_encode($response);
+
     }
 
     public function deleteArticle(Article $article){
         $req = $this->bdd->prepare("DELETE FROM section WHERE article_id = ?");
+        $req->execute([$article->id]);
+
+        $req = $this->bdd->prepare("DELETE FROM article_tag WHERE article_id = ?");
         $req->execute([$article->id]);
 
         $req = $this->bdd->prepare("SELECT * FROM comment WHERE article_id = ?");
@@ -133,7 +173,7 @@ class ArticleRepository extends ConnectBdd{
         $comment = $commentRepo->getCommentByArticleId($articleId);
         $article->comment = $comment;
 
-        
+
         $tag = new Tag();
         $tagRepo = new TagRepository;
         $tag = $tagRepo->getTagByArticleId($articleId);

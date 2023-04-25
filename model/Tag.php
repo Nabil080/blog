@@ -20,6 +20,29 @@ class TagRepository extends ConnectBdd{
         parent::__construct();
     }
 
+    public function getTagById($tagId){
+        $req = $this->bdd->prepare("SELECT * FROM tag WHERE tag_id = ?");
+        $req->execute([$tagId]);
+        $tag_data = $req->fetch();
+        $tag = new Tag;
+
+        $tag->id = $tag_data['tag_id'];
+        $tag->name = $tag_data['tag_name'];
+
+        return $tag;
+    }
+
+    public function getTagsById($id_array){
+        $tags = [];
+
+        foreach($id_array as $id){
+            $tag = new Tag;
+            $tag = $this->getTagById($id);
+            $tags[] = $tag;
+        }
+
+        return $tags;
+    }
 
     public function getTagByArticleId($articleId){
         $req = $this->bdd->prepare("SELECT tag_id FROM article_tag WHERE article_id = ?");
@@ -41,7 +64,6 @@ class TagRepository extends ConnectBdd{
 
         return $tags;
     }
-
 
     public function getAllTags(){
         $req = $this->bdd->prepare("SELECT * FROM tag");

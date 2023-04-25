@@ -9,6 +9,7 @@ class Comment{
     public $article;
     public $user;
     public $reply;
+    public $reports;
 
     public function createToInsert(array $commentForm):bool{
 
@@ -186,7 +187,7 @@ class CommentRepository extends ConnectBdd{
         return $comments;
     }
 
-    public function getcommentByID($id){
+    public function getCommentByID($id){
         $req = $this->bdd->prepare("SELECT * FROM comment WHERE comment_id = ? ");
         $req->execute([$id]);
         $data = $req->fetch();
@@ -197,6 +198,7 @@ class CommentRepository extends ConnectBdd{
             $comment->id = $data['comment_id'] ;
             $comment->date = $data['comment_date'] ;
             $comment->message = $data['comment_message'] ;
+            $comment->reports = $data['comment_reports'] ;
 
             $user = new User;
             $userRepo = new UserRepository;
@@ -214,6 +216,21 @@ class CommentRepository extends ConnectBdd{
             return false;
 
         }
+    }
+
+    public function getComments(){
+        $req = $this->bdd->prepare("SELECT * FROM comment ORDER BY comment_reports DESC, comment_id DESC");
+        $req->execute();
+        $data = $req->fetchAll(PDO::FETCH_ASSOC);
+        $comments = [];
+        
+        foreach($data as $key){
+            $comment = new Comment;
+            $comment = $this->getCommentByID($key['comment_id']);
+            $comments[] = $comment;
+        }
+
+        return $comments;
     }
 
 }

@@ -227,6 +227,10 @@ class UserRepository extends ConnectBdd{
         $req->execute([$token]);
         $req = $this->bdd->prepare("SELECT user_mail FROM user WHERE user_token = ?");
         $req->execute([$token]);
+        $req = $this->bdd->prepare("UPDATE user SET user_token = ? WHERE user_token = ?");
+        $new_token = getRandomToken();
+        $req->execute([$new_token,$token]);
+
         $mail = $req->fetch();
         header('Location: index.php?action=login&mail='.$mail['user_mail']);
     }
@@ -269,8 +273,9 @@ class UserRepository extends ConnectBdd{
         }
 
         if(!isset($_SESSION['error'])){
-            $req = $this->bdd->prepare("UPDATE `user` SET user_password = ? WHERE user_token = ?");
-            $req->execute([$password, $userPost['token']]);
+            $new_token = getRandomToken();
+            $req = $this->bdd->prepare("UPDATE `user` SET user_password = ?, user_token = ? WHERE user_token = ?");
+            $req->execute([$password,$new_token,$userPost['token']]);
 
             return true;
         }
