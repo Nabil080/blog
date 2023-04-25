@@ -2,7 +2,7 @@
 
 function logout(){
     session_destroy();
-    login();
+    header('Location:index.php');
 }
 
 function profile(){

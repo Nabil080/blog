@@ -108,7 +108,7 @@ class UserRepository extends ConnectBdd{
                 return $user;
             }else{
 
-                if(str_contains("signup",$_SERVER['REQUEST_URI'])){
+                if($_SERVER['REQUEST_URI'] != '/sltromain/index.php?action=signup_php'){
                     $response = array(
                         "status" => "failure",
                         "message" => "E-mail lié a aucun compte"
