@@ -67,51 +67,31 @@ class CommentRepository extends ConnectBdd{
         echo json_encode($response);
     }
 
-    public function reportComment(Comment $comment){
-        if(!isset($_SESSION['user']['reports'])){ $_SESSION['user']['reports'] = []; }
+    public function reportComment($commentId){
+        $req = $this->bdd->prepare("UPDATE comment SET comment_reports = comment_reports + 1 WHERE comment_id = ?");
+        $req->execute([$commentId]);
 
-        if(in_array($comment->id, $_SESSION['user']['reports'])){
-            $response = array(
-                "status" => "failure",
-                "message" => "Vous avez déjà signalé ce commentaire.",
-            );
-        }else{
-            $req = $this->bdd->prepare("UPDATE comment SET comment_reports = comment_reports + 1 WHERE comment_id = ?");
-            $req->execute([$comment->id]);
-
-            $_SESSION['user']['reports'][] = $comment->id;
-
-            $response = array(
-                "status" => "success",
-                "message" => "Le commentaire a bien été signalé !",
-            );
-        }
-
+        $response = array(
+            "status" => "success",
+            "message" => "Le commentaire a bien été signalé !",
+        );
 
         echo json_encode($response);
     }
 
     public function deleteComment(Comment $comment){
+        $req = $this->bdd->prepare("DELETE FROM reply WHERE comment_id = ?");
+        $req->execute([$comment->id]);
 
-        if($comment->user->id != $_SESSION['user']['id']){
-            $response = array(
-                "status" => "failure",
-                "message" => "Ta mère aurait honte de toi... !",
-            );
+        $req = $this->bdd->prepare("DELETE FROM comment WHERE comment_id = ?");
+        $req->execute([$comment->id]);
 
-            echo json_encode($response);
-        }else{
-            $req = $this->bdd->prepare("DELETE FROM comment WHERE comment_id = ?");
-            $req->execute([$comment->id]);
+        $response = array(
+            "status" => "success",
+            "message" => "Le commentaire a bien été supprimé !",
+        );
 
-            $response = array(
-                "status" => "success",
-                "message" => "Le commentaire a bien été supprimé !",
-            );
-
-            echo json_encode($response);
-        }
-
+        echo json_encode($response);
     }
 
     public function getCommentByArticleId($articleId){

@@ -39,7 +39,5 @@ if(!isset($_SESSION['user'])){
     require('user.php');
 }
 
-// var_dump($_SESSION);
 
 ?>
-

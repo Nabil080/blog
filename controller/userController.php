@@ -44,23 +44,19 @@ function reply(){
 function report(){
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
-
-    $comment = new Comment;
+    
     $commentRepo = new CommentRepository;
-    $comment = $commentRepo->getCommentById($data['comment']);
-    $commentRepo->reportComment($comment);
-
+    $commentRepo->reportComment($data['comment']);
+    
 }
 
 function delete(){
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
-
-    $comment = new Comment;
+    
     $commentRepo = new CommentRepository;
-    $comment = $commentRepo->getCommentById($data['comment']);
-    $commentRepo->deleteComment($comment);
-
+    $commentRepo->deleteComment($data['comment']);
+    
 }
 
 function update(){
