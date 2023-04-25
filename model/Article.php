@@ -17,7 +17,6 @@ class Article{
 
     public function createToInsert(array $articleForm):bool{
 
-
         if(securizeString($articleForm['name']) == false){
 
             return false;
@@ -39,8 +38,10 @@ class Article{
             return false;
         }
 
-        if(securizeString($articleForm['quote']) == false){
-            $this->quote = securizeString($articleForm['quote']);
+        if(!empty($articleForm['quote'])){
+            if(securizeString($articleForm['quote']) != false){
+                $this->quote = securizeString($articleForm['quote']);
+            }
         }
 
         $category = new Category;
@@ -53,7 +54,7 @@ class Article{
         $user = $userRepo->getUserById($_SESSION['user']['id']);
         $this->user = $user;
 
-        if(!empty($articleForm['tag'])){
+        if(isset($articleForm['tag'])){
             $tag = new Tag;
             $tagRepo = new TagRepository;
             $tag = $tagRepo->getTagsById($articleForm['tag']);
@@ -76,13 +77,35 @@ class ArticleRepository extends ConnectBdd{
         $req->execute([$article->name,$article->intro,$article->quote,$article->image,$article->category->id,$article->user->id]);
 
         $article->id = $this->bdd->lastInsertId();
+        $article->date = formatDate(date('Y-m-d H:i:s'));
 
-        foreach($article->tag as $tag){
-            $req = $this->bdd->prepare("INSERT INTO article_tag (article_id,tag_id) VALUES (?,?)");
-            $req->execute([$article->id,$tag->id]);
+        if(!empty($_POST['tag'])){
+            $tags = [];
+            foreach($article->tag as $tag){
+                $req = $this->bdd->prepare("INSERT INTO article_tag (article_id,tag_id) VALUES (?,?)");
+                $req->execute([$article->id,$tag->id]);
+                $new_tag = new Tag;
+                $tagRepo = new TagRepository;
+                $new_tag = $tagRepo->getTagById($tag->id);
+                $tags[] = $new_tag->name;
+            }
+            $tags = implode(',',$tags);
         }
 
-        header('Location:?action=admin&admin=crud_article');
+        $response = [
+            'status' =>'success',
+            'message' => 'Article ajouté',
+            'titre' => $article->name,
+            'id' => $article->id,
+            'date' => $article->date,
+            'intro' => $article->intro,
+            'quote' => $article->quote,
+            'image' => $article->image,
+            'category' => $article->category->name,
+            'tags' => isset($tags) ? $tags : "",
+        ];
+
+        echo json_encode($response);
 
     }
 
@@ -150,7 +173,7 @@ class ArticleRepository extends ConnectBdd{
         $comment = $commentRepo->getCommentByArticleId($articleId);
         $article->comment = $comment;
 
-        
+
         $tag = new Tag();
         $tagRepo = new TagRepository;
         $tag = $tagRepo->getTagByArticleId($articleId);

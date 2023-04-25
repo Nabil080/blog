@@ -13,7 +13,7 @@
 <a href="?action=admin&admin=crud">Accueil</a>
 
 
-<form class="border flex flex-col mx-20 p-4 bg-blue-100 [&>input]:border" enctype="multipart/form-data" action="?action=admin&admin=add_article" method="post">
+<form id="add_form" class="border flex flex-col mx-20 p-4 bg-blue-100 [&>input]:border" enctype="multipart/form-data">
 
     <label>Nom de l'article</label>
     <input type="text" name="name" placeholder="nom de l'article">
@@ -39,6 +39,44 @@
 
 </form>
 
+<script>
+const form = document.getElementById("add_form");
+
+form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    // console.log(form);
+
+    formData = new FormData(form);
+    // console.log(formData);
+    fetch('?action=admin&admin=add_article',{
+        method: "POST",
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+        const newRow = document.getElementById("new_article");
+        const newName = document.getElementById("new_name");
+        newName.innerText = data.titre;
+        const newId = document.getElementById("new_id");
+        newId.innerText = data.id;
+        const newDate = document.getElementById("new_date");
+        newDate.innerText = data.date;
+        const newQuote = document.getElementById("new_quote");
+        newQuote.innerText = data.quote;
+        const newImage = document.getElementById("new_image");
+        newImage.src = "upload/"+ data.image;
+        const newCategory = document.getElementById("new_category");
+        newCategory.innerText = data.category;
+        const newTag = document.getElementById("new_tag");
+        newTag.innerText = data.tags;
+
+    })
+})
+
+
+</script>
+
 <table class="w-[90%] mx-auto text-center border-2 border-black">
     <div class="w-fit mx-auto text-xl">Articles</div>
         <tr class="mb-4 divide-gray-500 divide-x-2 bg-blue-300 ">
@@ -52,14 +90,14 @@
             <th>Tags</th>
         </tr>
             <tr id="new_article" class="space-x-4 divide-gray-500 divide-x-2">
-                <td>article name</td>
-                <td>article id</td>
-                <td>article date</td>
-                <td>article intro</td>
-                <td>article quote</td>
-                <td>article image</td>
-                <td>article categorie</td>
-                <td>article tag</td>
+                <td id="new_name">article name</td>
+                <td id="new_id">article id</td>
+                <td id="new_date">article date</td>
+                <td id="new_intro">article intro</td>
+                <td id="new_quote">article quote</td>
+                <td> <img src="" id="new_image" width="1000px"></td>
+                <td id="new_category">article categorie</td>
+                <td id="new_tag">article tag</td>
             </tr>
         <?php
             foreach ($articles as $article) {

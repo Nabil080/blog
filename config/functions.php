@@ -101,7 +101,7 @@ function securizeImage(array $filesImage){
         $extension = explode('.', $nameFile);
 
 
-        $max_size =1000000;
+        $max_size = 1000000;
 
 
         if(in_array($typeFile, $type))
@@ -112,12 +112,13 @@ function securizeImage(array $filesImage){
                 {
                     if(move_uploaded_file($tmpFile, $path.$image = uniqid() . '.' . end($extension)) )
                     {
-                        $response = array(
-                            "status" => "",
-                            "message" => "L'image a bien été upload'"
-                        );
-                        echo json_encode($response);
-
+                        if(!str_contains($_SERVER['REQUEST_URI'],"admin")){
+                            $response = array(
+                                "status" => "",
+                                "message" => "L'image a bien été upload'"
+                            );
+                            echo json_encode($response);
+                        }
                         return $image;
                     }
                     else

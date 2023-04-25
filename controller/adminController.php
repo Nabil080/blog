@@ -37,12 +37,11 @@ function deleteUser(){
 }
 
 function addArticle(){
-    if(isset($_POST['article'])){
+    if(isset($_POST)){
         $article = new Article;
         if($article->createToInsert($_POST)){
             $articleRepo = new ArticleRepository;
             $articleRepo->insertArticle($article);
-            var_dump($article);
         }
     }
 }

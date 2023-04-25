@@ -21,7 +21,7 @@ class TagRepository extends ConnectBdd{
     }
 
     public function getTagById($tagId){
-        $req = $this->bdd->prepare("SELECT * FROM Tag WHERE tag_id = ?");
+        $req = $this->bdd->prepare("SELECT * FROM tag WHERE tag_id = ?");
         $req->execute([$tagId]);
         $tag_data = $req->fetch();
         $tag = new Tag;
