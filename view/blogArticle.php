@@ -126,16 +126,16 @@ $half_intro = $count_words / 2;
 
             <div id="comments" class="comments">
             <h4 class="comments-count"><?=count($article->comment)?> comments</h4>
-            
-
 
               <?php foreach($article->comment as $comment){ ?>
                 <div id="message_<?=$comment->id?>" style="color:orange"></div>
                 <div id="comment_<?=$comment->id?>" class="comment relative" style="transition:display 2000ms">
                 <!-- boutons gestion commentaire -->
                   <div style="position:absolute;top:8px;right:8px;display:flex;">
+                  <?php if($_SESSION['user']['id'] == $comment->user->id OR $_SESSION['user']['role'] == 1){ ?>
                         <div id="update_<?=$comment->id?>" onclick="updateCom(<?=$comment->id?>)" style="padding-inline:8px;cursor:pointer;"><i class="fa-solid fa-pen-to-square"></i></div>
                         <div id="delete_<?=$comment->id?>" onclick="deleteCom(<?=$comment->id?>)" style="padding-inline:8px;cursor:pointer;"><i class="fa-solid fa-trash"></i></div>
+                  <?php }?>
                         <div id="report_<?=$comment->id?>" onclick="reportCom(<?=$comment->id?>)" style="padding-inline:8px;cursor:pointer;"><i class="fa-solid fa-exclamation"></i></div>
                   </div>
                   <div class="d-flex">
@@ -212,7 +212,6 @@ $half_intro = $count_words / 2;
                   <p id="message" style="color:orange;"></p>
                   <button id="sub-com" type="submit" class="btn btn-primary">Post Comment</button>
                 </form>
-
                 <script>
 
                 function deleteCom(commentId){
@@ -232,9 +231,12 @@ $half_intro = $count_words / 2;
                   if(data.status === 'success'){
                     const commentDiv = document.getElementById("comment_"+commentId);
                     commentDiv.style.display = "none";
-                    const messageDiv = document.getElementById("message_"+commentId);
-                    messageDiv.innerText = data.message
+                  }else{
+                    alert("Ta mère aurait honte de toi...")
                   }
+
+                  const messageDiv = document.getElementById("message_"+commentId);
+                    messageDiv.innerText = data.message
                 });
                 }
 

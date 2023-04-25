@@ -79,16 +79,27 @@ class CommentRepository extends ConnectBdd{
         echo json_encode($response);
     }
 
-    public function deleteComment($commentId){
-        $req = $this->bdd->prepare("DELETE FROM comment WHERE comment_id = ?");
-        $req->execute([$commentId]);
+    public function deleteComment(Comment $comment){
 
-        $response = array(
-            "status" => "success",
-            "message" => "Le commentaire a bien été supprimé !",
-        );
+        if($comment->user->id != $_SESSION['user']['id']){
+            $response = array(
+                "status" => "failure",
+                "message" => "Ta mère aurait honte de toi... !",
+            );
 
-        echo json_encode($response);
+            echo json_encode($response);
+        }else{
+            $req = $this->bdd->prepare("DELETE FROM comment WHERE comment_id = ?");
+            $req->execute([$comment->id]);
+
+            $response = array(
+                "status" => "success",
+                "message" => "Le commentaire a bien été supprimé !",
+            );
+
+            echo json_encode($response);
+        }
+
     }
 
     public function getCommentByArticleId($articleId){
