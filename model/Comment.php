@@ -79,9 +79,12 @@ class CommentRepository extends ConnectBdd{
         echo json_encode($response);
     }
 
-    public function deleteComment($commentId){
+    public function deleteComment(Comment $comment){
+        $req = $this->bdd->prepare("DELETE FROM reply WHERE comment_id = ?");
+        $req->execute([$comment->id]);
+
         $req = $this->bdd->prepare("DELETE FROM comment WHERE comment_id = ?");
-        $req->execute([$commentId]);
+        $req->execute([$comment->id]);
 
         $response = array(
             "status" => "success",

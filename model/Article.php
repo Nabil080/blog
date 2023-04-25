@@ -72,6 +72,31 @@ class ArticleRepository extends ConnectBdd{
         
     }
 
+    public function deleteArticle(Article $article){
+        $req = $this->bdd->prepare("DELETE FROM section WHERE article_id = ?");
+        $req->execute([$article->id]);
+
+        $req = $this->bdd->prepare("SELECT * FROM comment WHERE article_id = ?");
+        $req->execute([$article->id]);
+        $data = $req->fetchAll();
+        foreach($data as $key){
+            $comment = new Comment;
+            $commentRepo = new CommentRepository;
+            $comment = $commentRepo->getCommentById($key['comment_id']);
+            $commentRepo->deleteComment($comment);
+        }
+
+        $req = $this->bdd->prepare("DELETE FROM article WHERE article_id = ?");
+        $req->execute([$article->id]);
+
+        $response = [
+            'status' =>'success',
+            'message' => 'Article supprimé'
+        ];
+
+        echo json_encode($response);
+    }
+
     public function getArticle($articleId){
         
         $article = new Article;
