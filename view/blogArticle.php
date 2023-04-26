@@ -132,8 +132,9 @@ $half_intro = $count_words / 2;
                 <div id="comment_<?=$comment->id?>" class="comment relative" style="transition:display 2000ms">
                 <!-- boutons gestion commentaire -->
                   <div style="position:absolute;top:8px;right:8px;display:flex;">
-                  <?php if($_SESSION['user']['id'] == $comment->user->id OR $_SESSION['user']['role'] == 1){ ?>
+                  <?php if($_SESSION['user']['id'] == $comment->user->id){ ?>
                         <div id="update_<?=$comment->id?>" onclick="updateCom(<?=$comment->id?>)" style="padding-inline:8px;cursor:pointer;"><i class="fa-solid fa-pen-to-square"></i></div>
+                  <?php } if($_SESSION['user']['id'] == $comment->user->id OR $_SESSION['user']['role'] == 1){ ?>
                         <div id="delete_<?=$comment->id?>" onclick="deleteCom(<?=$comment->id?>)" style="padding-inline:8px;cursor:pointer;"><i class="fa-solid fa-trash"></i></div>
                   <?php }?>
                         <div id="report_<?=$comment->id?>" onclick="reportCom(<?=$comment->id?>)" style="padding-inline:8px;cursor:pointer;"><i class="fa-solid fa-exclamation"></i></div>
@@ -174,7 +175,16 @@ $half_intro = $count_words / 2;
                       </div>
                     </div>
                   <?php foreach($comment->reply as $reply){?>
-                  <div id="comment_reply_<?=$reply->id?>" class="comment comment-reply">
+                  <div id="comment_reply_<?=$reply->id?>" class="comment relative comment-reply">
+                  <!-- boutons gestion commentaire -->
+                  <div style="position:absolute;top:8px;right:8px;display:flex;">
+                  <?php if($_SESSION['user']['id'] == $reply->user->id){ ?>
+                        <div id="update_<?=$reply->id?>" onclick="updateReply(<?=$reply->id?>)" style="padding-inline:8px;cursor:pointer;"><i class="fa-solid fa-pen-to-square"></i></div>
+                  <?php } if($_SESSION['user']['id'] == $reply->user->id OR $_SESSION['user']['role'] == 1){ ?>
+                        <div id="delete_<?=$reply->id?>" onclick="deleteReply(<?=$reply->id?>)" style="padding-inline:8px;cursor:pointer;"><i class="fa-solid fa-trash"></i></div>
+                  <?php }?>
+                        <div id="report_<?=$reply->id?>" onclick="reportReply(<?=$reply->id?>)" style="padding-inline:8px;cursor:pointer;"><i class="fa-solid fa-exclamation"></i></div>
+                  </div>
                   <div class="d-flex">
                     <div class="comment-img"><img src="upload/<?=$reply->user->image?>" alt=""></div>
                     <div>
@@ -348,7 +358,32 @@ $half_intro = $count_words / 2;
                     })
                     .catch(error => console.error(error));
                   })
+                }
 
+                function deleteReply(replyId){
+                  console.log(replyId);
+
+                  fetch('?action=delete_reply',{
+                  method: "POST",
+                  // headers: {'Content-Type': 'application/json'},
+                  body: JSON.stringify({reply: replyId}),
+                })
+                .then(function(response) {
+                  return response.text();
+                })
+                .then(function(data) {
+                  data = JSON.parse(data);
+
+                  if(data.status === 'success'){
+                    const replyDiv = document.getElementById("comment_reply_"+replyId);
+                    replyDiv.style.display = "none";
+                  }else{
+                    alert("Ta mère aurait honte de toi...")
+                  }
+
+                  const messageDiv = document.getElementById("message_"+replyId);
+                    messageDiv.innerText = data.message
+                });
                 }
 
                       // TODO : TRAITEMENT AJAX COMMENTAIRE

@@ -73,6 +73,17 @@ function update(){
 
 }
 
+function deleteReply(){
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
+
+    $replyRepo = new ReplyRepository;
+    $reply = new Reply;
+    $reply = $replyRepo->getReplyById($data['reply']);
+    $replyRepo->deleteReply($reply);
+
+}
+
 function profileTreatment(){
     $user = new User;
     $userRepo = new UserRepository;

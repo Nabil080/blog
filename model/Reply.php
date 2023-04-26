@@ -8,6 +8,7 @@ class Reply{
     public $message;
     public $comment;
     public $user;
+    public $reports;
 
     public function createToInsert(array $replyForm):bool{
 
@@ -57,6 +58,47 @@ class ReplyRepository extends ConnectBdd{
         echo json_encode($response);
     }
 
+    public function deleteReply(Reply $reply){
+        $req = $this->bdd->prepare("DELETE FROM reply WHERE reply_id = ?");
+        $req->execute([$reply->id]);
+
+        
+
+
+
+
+    }
+
+    public function getReplyByID($id){
+        $req = $this->bdd->prepare("SELECT * FROM reply WHERE reply_id = ? ");
+        $req->execute([$id]);
+        $data = $req->fetch();
+        // var_dump($data);
+
+        if($data != false){
+            $reply = new reply();
+            $reply->id = $data['reply_id'] ;
+            $reply->date = $data['reply_date'] ;
+            $reply->message = $data['reply_message'] ;
+            $reply->reports = $data['reply_reports'] ;
+
+            $user = new User;
+            $userRepo = new UserRepository;
+            $user = $userRepo->getUserByID($data['user_id']);
+            $reply->user = $user;
+
+            $comment = new comment;
+            $commentRepo = new commentRepository;
+            $comment = $commentRepo->getCommentById($data['comment_id']);
+            $reply->comment = $comment;
+
+            return $reply;
+        }else{
+
+            return false;
+
+        }
+    }
 
     public function getRepliesByCommentId($commentId){
         $req = $this->bdd->prepare("SELECT * FROM reply WHERE comment_id = ?");
