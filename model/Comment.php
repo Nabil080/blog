@@ -94,7 +94,7 @@ class CommentRepository extends ConnectBdd{
 
     public function deleteComment(Comment $comment){
 
-        if($comment->user->id != $_SESSION['user']['id']){
+        if($comment->user->id != $_SESSION['user']['id'] AND $_SESSION['user']['role'] != 1){
             $response = array(
                 "status" => "failure",
                 "message" => "Ta mère aurait honte de toi... !",

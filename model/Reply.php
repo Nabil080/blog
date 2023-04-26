@@ -48,7 +48,7 @@ class ReplyRepository extends ConnectBdd{
 
         $response = array(
             "status" => "success",
-            "message" => "La réponse a bien été posté",
+            "message" => "La réponse a bien été postée",
             "comment" => $reply->message,
             "date" => $date,
             "image" => "upload/".$user->image,
@@ -59,14 +59,48 @@ class ReplyRepository extends ConnectBdd{
     }
 
     public function deleteReply(Reply $reply){
-        $req = $this->bdd->prepare("DELETE FROM reply WHERE reply_id = ?");
-        $req->execute([$reply->id]);
 
-        
+        if($reply->user->id != $_SESSION['user']['id'] AND $_SESSION['user']['role'] != 1){
+            $response = array(
+                "status" => "failure",
+                "message" => "Ta mère aurait honte de toi... !",
+            );
+
+        }elseif($_SESSION['user']['role'] == 1 OR $_SESSION['user']['id'] == $reply->user->id){
+            $req = $this->bdd->prepare("DELETE FROM reply WHERE reply_id = ?");
+            $req->execute([$reply->id]);
+
+            $response = array(
+                "status" => "success",
+                "message" => "La réponse a bien été supprimée",
+            );
+        }
+
+        echo json_encode($response);
+    }
+
+    public function reportReply(Reply $reply){
+        if(!isset($_SESSION['user']['reports'])){ $_SESSION['user']['reports'] = []; }
+
+        if(in_array($reply->id, $_SESSION['user']['reports'])){
+            $response = array(
+                "status" => "failure",
+                "message" => "Vous avez déjà signalé cette réponse.",
+            );
+        }else{
+            $req = $this->bdd->prepare("UPDATE reply SET reply_reports = reply_reports + 1 WHERE reply_id = ?");
+            $req->execute([$reply->id]);
+
+            $_SESSION['user']['reports'][] = $reply->id;
+
+            $response = array(
+                "status" => "success",
+                "message" => "La réponse a bien été signalé !",
+            );
+        }
 
 
-
-
+        echo json_encode($response);
     }
 
     public function getReplyByID($id){
