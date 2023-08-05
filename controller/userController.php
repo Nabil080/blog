@@ -2,7 +2,7 @@
 
 function logout(){
     session_destroy();
-    login();
+    header('Location:index.php');
 }
 
 function profile(){
@@ -44,35 +44,49 @@ function reply(){
 function report(){
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
-    
+
+    $comment = new Comment;
     $commentRepo = new CommentRepository;
-    $commentRepo->reportComment($data['comment']);
-    
+    $comment = $commentRepo->getCommentById($data['comment']);
+    $commentRepo->reportComment($comment);
+
 }
 
 function delete(){
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
-    
+
+    $comment = new Comment;
     $commentRepo = new CommentRepository;
-    $commentRepo->deleteComment($data['comment']);
-    
+    $comment = $commentRepo->getCommentById($data['comment']);
+    $commentRepo->deleteComment($comment);
+
 }
 
 function update(){
     $commentRepo = new CommentRepository;
     $comment = new Comment;
     if($comment->createToModify($_POST)){
-        var_dump($_POST);
-        // $commentRepo->updateComment($_POST)
+        $comment = $commentRepo->getCommentById($_POST['commentId']);
+        $commentRepo->updateComment($_POST,$comment);
     }
+
+}
+
+function deleteReply(){
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
+
+    $replyRepo = new ReplyRepository;
+    $reply = new Reply;
+    $reply = $replyRepo->getReplyById($data['reply']);
+    $replyRepo->deleteReply($reply);
 
 }
 
 function profileTreatment(){
     $user = new User;
     $userRepo = new UserRepository;
-
     if($user->createToModify($_POST)){
         $userRepo->updateUser($user);
     }else{

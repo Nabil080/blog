@@ -36,6 +36,15 @@
                 case'update_com':
                     update();
                     break;
+                case'report_reply':
+                    // report();
+                    break;
+                case'delete_reply':
+                    deleteReply();
+                    break;
+                case'update_reply':
+                    // update();
+                    break;
                 default:
                     homepage();
                     break;
